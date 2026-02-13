@@ -21,6 +21,7 @@ const LoginPage = () => {
   const { user } = useSelector<RootState, RootState["user"]>(
     (state) => state.user,
   );
+  const token = localStorage.getItem("accessToken");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -45,7 +46,6 @@ const LoginPage = () => {
         loginWithEmail({
           email: formData.email,
           password: formData.password,
-          navigate: navigate,
         }),
       );
     } catch (error) {
@@ -58,10 +58,9 @@ const LoginPage = () => {
       );
     }
   };
-
-  // if (user) {
-  //   navigate("/");
-  // }
+  if (user || token) {
+    navigate("/");
+  }
 
   return (
     <div className="flex-1 flex items-center justify-center">

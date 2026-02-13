@@ -2,11 +2,7 @@ import type { RootState } from "@/features/store";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
-interface PrivateRoutesProps {
-  permissionLevel: "customer" | "admin";
-}
-
-export default function PrivateRoutes({ permissionLevel }: PrivateRoutesProps) {
+export default function GuestRoutes() {
   const { user, loading } = useSelector<RootState, RootState["user"]>(
     (state) => state.user,
   );
@@ -17,9 +13,5 @@ export default function PrivateRoutes({ permissionLevel }: PrivateRoutesProps) {
     return <div>Loading...</div>;
   }
 
-  return user?.level === permissionLevel ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  return user ? <Navigate to="/" replace /> : <Outlet />;
 }

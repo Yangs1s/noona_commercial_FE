@@ -123,3 +123,9 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+@layer base {
+  iframe[data-test="uw-iframe"] {
+    @apply z-100;
+  }
+}

@@ -1,8 +1,16 @@
-import { Search, ShoppingCart, Menu } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, ShoppingCart, Menu, User, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
+import { useSelector, useDispatch } from "react-redux";
+import { type RootState, type AppDispatch } from "@/features/store";
+import { logout } from "@/features/user/userSlice";
 
 export default function Header() {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { user } = useSelector<RootState, RootState["user"]>(
+    (state) => state.user,
+  );
   return (
     <header className="flex items-center justify-between px-6 md:px-12 py-8 border-b border-border sticky top-0 bg-white/90 dark:bg-background/90 backdrop-blur-md z-50">
       <div className="flex items-center gap-3 shrink-0">
@@ -46,6 +54,30 @@ export default function Header() {
             1
           </span>
         </div>
+        {user ? (
+          <>
+            <Link
+              to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
+            >
+              <Button variant={"ghost"}>
+                <User className="size-5" />
+              </Button>
+            </Link>
+            <Button
+              variant={"ghost"}
+              onClick={() => dispatch(logout({ navigate }))}
+            >
+              <LogOut className="size-5" />
+            </Button>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+          >
+            Login
+          </Link>
+        )}
         <Button variant={"ghost"} className="md:hidden">
           <Menu className="size-5" />
         </Button>

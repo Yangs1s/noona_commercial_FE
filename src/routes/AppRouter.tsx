@@ -2,15 +2,18 @@ import { Route } from "react-router-dom";
 
 import { Routes } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
+import GuestRoutes from "./GuestRoutes";
 import LoginPage from "@/pages/LoginPage/LoginPage";
 import SignupPage from "@/pages/SignupPage/SignupPage";
 import ProductListPage from "@/pages/ProductList/ProductListpage";
+import AdminInventoryPage from "@/pages/AdminInventoryPage/AdminInventoryPage";
 
 export default function AppRouter() {
   return (
     <Routes>
       {/* User */}
       <Route path="/" element={<ProductListPage />} />
+      <Route path="/product/:id" element={<div>ProductDetailPage</div>} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route element={<PrivateRoutes permissionLevel={"customer"} />}>
@@ -25,8 +28,7 @@ export default function AppRouter() {
         path="/admin"
         element={<PrivateRoutes permissionLevel={"admin"} />}
       >
-        <Route index element={<div>Dashboard</div>} />
-        <Route path="inventory" element={<div>Inventory</div>} />
+        <Route path="inventory" element={<AdminInventoryPage />} />
         <Route path="orders" element={<div>Orders</div>} />
         <Route path="analytics" element={<div>Analytics</div>} />
         <Route path="settings" element={<div>Settings</div>} />

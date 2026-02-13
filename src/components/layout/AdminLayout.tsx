@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Package,
   ShoppingBag,
@@ -7,10 +7,14 @@ import {
   Search,
   Bell,
   CircleUser,
+  LogOut,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { ToastContainer } from "react-toastify";
 import { cn } from "@/lib/utils";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/features/store";
+import { logout } from "@/features/user/userSlice";
 
 const sidebarLinks = [
   { to: "/admin/inventory", label: "Inventory", icon: Package },
@@ -25,6 +29,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <div className="min-h-screen flex bg-background text-foreground">
@@ -92,6 +98,14 @@ export default function AdminLayout({
               </span>
               <CircleUser className="size-6 group-hover:opacity-70 transition-opacity" />
             </button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="cursor-pointer"
+              onClick={() => dispatch(logout({ navigate }))}
+            >
+              <LogOut className="size-5" />
+            </Button>
           </div>
         </header>
 

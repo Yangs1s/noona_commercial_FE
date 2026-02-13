@@ -30,15 +30,11 @@ interface RegisterPayload {
 interface LoginPayload {
   email: string;
   password: string;
-  navigate: (path: string) => void;
 }
 
 export const loginWithEmail = createAsyncThunk(
   "auth/loginwithMail",
-  async (
-    { email, password, navigate }: LoginPayload,
-    { dispatch, rejectWithValue },
-  ) => {
+  async ({ email, password }: LoginPayload, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post("/auth/loginwithMail", {
         email,
@@ -49,7 +45,6 @@ export const loginWithEmail = createAsyncThunk(
           showToastMessage({ message: "로그인 성공", status: "success" }),
         );
         localStorage.setItem("accessToken", response.data.token);
-        navigate("/");
         return response.data;
       }
     } catch (error) {
@@ -70,13 +65,12 @@ export const logout = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     try {
-      const response = await api.get("/user/logout");
-      if (response.status === 200) {
-        dispatch(
-          showToastMessage({ message: "로그아웃 성공", status: "success" }),
-        );
-        navigate("/login");
-      }
+      localStorage.removeItem("accessToken");
+      dispatch(
+        showToastMessage({ message: "로그아웃 성공", status: "success" }),
+      );
+      navigate("/login");
+      return null;
     } catch (error) {
       dispatch(showToastMessage({ message: "로그아웃 실패", status: "error" }));
       return rejectWithValue(error);
@@ -177,9 +171,9 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
       })
-      .addCase(loginWithToken.rejected, (state, action) => {
+      .addCase(loginWithToken.rejected, (state) => {
         state.loading = false;
-        state.loginError = action.payload as string;
+        state.user = null;
       });
   },
 });
