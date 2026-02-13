@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { GoogleIcon, ShopLogoIcon } from "@/components/icons";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Activity } from "react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/features/store";
 import { showToastMessage } from "@/features/common/uiSlice";
@@ -58,9 +58,11 @@ const LoginPage = () => {
       );
     }
   };
-  if (user || token) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (user || token) {
+      navigate("/");
+    }
+  }, [user, token, navigate]);
 
   return (
     <div className="flex-1 flex items-center justify-center">
