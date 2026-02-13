@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { showToastMessage } from "@/features/common/uiSlice";
 import { api } from "@/utils/api";
+import type { AxiosError } from "axios";
+import axios from "axios";
 // import { initialCart } from "@/features/cart/cartSlice";
 interface User {
   _id: string;
@@ -97,13 +99,15 @@ export const registerUser = createAsyncThunk(
       );
       navigate("/login");
       return response.data;
-    } catch (error) {
-      dispatch(
-        showToastMessage({
-          message: "회원가입 실패했습니다.",
-          status: "error",
-        }),
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
       return rejectWithValue(error);
     }
   },
