@@ -2,7 +2,7 @@ import { Route } from "react-router-dom";
 
 import { Routes } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
-import GuestRoutes from "./GuestRoutes";
+
 import LoginPage from "@/pages/LoginPage/LoginPage";
 import SignupPage from "@/pages/SignupPage/SignupPage";
 import ProductListPage from "@/pages/ProductList/ProductListpage";

@@ -1,5 +1,5 @@
-import type { AppDispatch, RootState } from "@/features/store";
-import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/features/store";
+import { useSelector } from "react-redux";
 
 const ProductListPage = () => {
   //   const dispatch = useDispatch<AppDispatch>();
