@@ -1,87 +1,160 @@
-import { Search, ShoppingCart, Menu, User, LogOut } from "lucide-react";
+import { Search, ShoppingCart, Menu, User, LogOut, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState, type AppDispatch } from "@/features/store";
 import { logout } from "@/features/user/userSlice";
+import { useState } from "react";
 
 export default function Header() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useSelector<RootState, RootState["user"]>(
     (state) => state.user,
   );
   return (
-    <header className="flex items-center justify-between px-6 md:px-12 py-8 border-b border-border sticky top-0 bg-white/90 dark:bg-background/90 backdrop-blur-md z-50">
-      <div className="flex items-center gap-3 shrink-0">
-        <div className="size-2 bg-primary dark:bg-white rounded-full" />
-        <h1 className="text-base font-bold tracking-[0.2em] uppercase">
-          ShopMinimal
-        </h1>
-      </div>
-
-      <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
-        <Link
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-          to="/new-arrivals"
-        >
-          New Arrivals
-        </Link>
-        <Link
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-          to="/collections"
-        >
-          Collections
-        </Link>
-        <Link
-          className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-          to="/about"
-        >
-          About
-        </Link>
-      </nav>
-
-      <div className="flex items-center gap-6 shrink-0">
-        <Button variant={"ghost"}>
-          <Search className="size-5" />
-        </Button>
-
-        <div className="relative">
-          <Button variant={"ghost"}>
-            <ShoppingCart className="size-5" />
-          </Button>
-          <span className="absolute -top-1 -right-1 bg-primary dark:bg-white text-[8px] text-white dark:text-black size-3.5 flex items-center justify-center rounded-full font-bold">
-            1
-          </span>
+    <header className="sticky top-0 bg-white/90 dark:bg-background/90 backdrop-blur-md z-50 border-b border-border">
+      <div className="flex items-center justify-between px-4 sm:px-6 md:px-12 py-6 md:py-8">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="size-2 bg-primary dark:bg-white rounded-full" />
+          <h1 className="text-sm md:text-base font-bold tracking-[0.2em] uppercase">
+            ShopMinimal
+          </h1>
         </div>
-        {user ? (
-          <>
-            <Link
-              to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
-            >
-              <Button variant={"ghost"}>
-                <User className="size-5" />
-              </Button>
-            </Link>
-            <Button
-              variant={"ghost"}
-              onClick={() => dispatch(logout({ navigate }))}
-            >
-              <LogOut className="size-5" />
-            </Button>
-          </>
-        ) : (
+
+        <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
           <Link
-            to="/login"
             className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+            to="/new-arrivals"
           >
-            Login
+            New Arrivals
           </Link>
-        )}
-        <Button variant={"ghost"} className="md:hidden">
-          <Menu className="size-5" />
-        </Button>
+          <Link
+            className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+            to="/collections"
+          >
+            Collections
+          </Link>
+          <Link
+            className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+            to="/about"
+          >
+            About
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-3 sm:gap-6 shrink-0">
+          <Button variant={"ghost"} size="icon">
+            <Search className="size-5" />
+          </Button>
+
+          <div className="relative">
+            <Button variant={"ghost"} size="icon">
+              <ShoppingCart className="size-5" />
+            </Button>
+            <span className="absolute -top-1 -right-1 bg-primary dark:bg-white text-[8px] text-white dark:text-black size-3.5 flex items-center justify-center rounded-full font-bold">
+              1
+            </span>
+          </div>
+          {user ? (
+            <div className="hidden sm:flex items-center gap-3">
+              <Link
+                to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
+              >
+                <Button variant={"ghost"} size="icon">
+                  <User className="size-5" />
+                </Button>
+              </Link>
+              <Button
+                variant={"ghost"}
+                size="icon"
+                onClick={() => dispatch(logout({ navigate }))}
+              >
+                <LogOut className="size-5" />
+              </Button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="hidden sm:block text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+            >
+              Login
+            </Link>
+          )}
+          <Button
+            variant={"ghost"}
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
+          </Button>
+        </div>
       </div>
+
+      {/* 모바일 메뉴 */}
+      {mobileMenuOpen && (
+        <nav className="md:hidden border-t border-border px-4 py-6 space-y-4 bg-white dark:bg-background">
+          <Link
+            className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+            to="/new-arrivals"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            New Arrivals
+          </Link>
+          <Link
+            className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+            to="/collections"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Collections
+          </Link>
+          <Link
+            className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+            to="/about"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About
+          </Link>
+          <div className="border-t border-border pt-4">
+            {user ? (
+              <div className="space-y-4">
+                <Link
+                  to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
+                  className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <User className="size-4" />
+                  My Page
+                </Link>
+                <button
+                  className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+                  onClick={() => {
+                    dispatch(logout({ navigate }));
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <LogOut className="size-4" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
