@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { showToastMessage } from "@/features/common/uiSlice";
 import { api } from "@/utils/api";
 import axios from "axios";
+import type { AppDispatch } from "../store";
 // import { initialCart } from "@/features/cart/cartSlice";
 interface User {
   _id: string;
@@ -49,6 +50,14 @@ export const loginWithEmail = createAsyncThunk(
         return response.data;
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
       return rejectWithValue(error);
     }
   },

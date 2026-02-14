@@ -15,7 +15,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   //   (state) => state.user,
   // );
   useEffect(() => {
-    dispatch(loginWithToken());
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      dispatch(loginWithToken());
+    }
   }, []);
   return (
     <>
