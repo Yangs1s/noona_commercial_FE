@@ -1,22 +1,33 @@
 import { api } from "@/utils/api";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
+import type { Product } from "@/types/product.type";
 import axios from "axios";
 
-// interface Product {
-//   _id: string;
-//   name: string;
-//   price: number;
-//   description: string;
-//   image: string;
-//   category: string[];
-//   stock: number;
-// }
+interface ProductState {
+  products: Product[] | null;
+  isLoading: boolean;
+  error: string | null;
+  success: boolean;
+}
+const initialState: ProductState = {
+  products: null,
+  isLoading: false,
+  error: null,
+  success: false,
+};
+
+interface QueryParams {
+  page: number;
+  limit: number;
+  sort: "createdAt" | "updatedAt" | "name" | "price";
+  order: "asc" | "desc";
+}
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
   async (
-    { page, limit }: { page: number; limit: number },
+    { page, limit, sort, order }: QueryParams,
     { rejectWithValue, dispatch },
   ) => {
     try {
@@ -24,8 +35,11 @@ export const getProducts = createAsyncThunk(
         params: {
           page,
           limit,
+          sort,
+          order,
         },
       });
+      console.log(response.data);
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -41,3 +55,32 @@ export const getProducts = createAsyncThunk(
     }
   },
 );
+
+export const productSlice = createSlice({
+  name: "product",
+  initialState: initialState,
+  reducers: {
+    clearErrors: (state) => {
+      state.error = null;
+      state.success = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getProducts.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getProducts.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload.data;
+      state.success = true;
+    });
+    builder.addCase(getProducts.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message as string;
+      state.success = false;
+    });
+  },
+});
+
+export const { clearErrors } = productSlice.actions;
+export default productSlice.reducer;

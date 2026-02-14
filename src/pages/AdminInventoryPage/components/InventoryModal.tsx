@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -15,7 +17,13 @@ import CategorySelector from "./CategorySelector";
 import StockManager from "./StockManager";
 import { useProductForm } from "@/hooks/useProductForm";
 
-const InventoryModal = ({ mode }: { mode: "new" | "edit" }) => {
+const InventoryModal = ({
+  mode,
+  children,
+}: {
+  mode: "new" | "edit";
+  children: React.ReactNode;
+}) => {
   const {
     formData,
     handleChange,
@@ -29,10 +37,12 @@ const InventoryModal = ({ mode }: { mode: "new" | "edit" }) => {
   } = useProductForm(mode);
 
   return (
-    <DialogContent
-      className="max-w-2xl max-h-[90vh] overflow-y-auto"
-      onInteractOutside={(e) => e.preventDefault()}
-    >
+    <Dialog modal={false}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent
+        className="max-w-2xl max-h-[90vh] overflow-y-auto"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
       <DialogHeader>
         <DialogTitle className="border-b font-light text-lg border-gray-200 pb-4">
           {mode === "new" ? "새로운 상품 추가" : "상품 수정"}
@@ -155,7 +165,8 @@ const InventoryModal = ({ mode }: { mode: "new" | "edit" }) => {
           {mode === "new" ? "상품 추가" : "수정 완료"}
         </Button>
       </DialogFooter>
-    </DialogContent>
+      </DialogContent>
+    </Dialog>
   );
 };
 

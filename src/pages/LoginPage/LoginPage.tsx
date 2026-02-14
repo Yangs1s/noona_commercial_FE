@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleIcon, ShopLogoIcon } from "@/components/icons";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
-import { Activity } from "react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/features/store";
@@ -30,10 +29,16 @@ const LoginPage = () => {
   const validate = () => {
     const newErrors: Record<string, string> = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email))
+    if (!formData.email.trim()) {
+      newErrors.email = "이메일을 입력해주세요.";
+    } else if (!emailRegex.test(formData.email)) {
       newErrors.email = "이메일 형식이 올바르지 않습니다.";
-    if (formData.password.length < 8)
+    }
+    if (!formData.password) {
+      newErrors.password = "비밀번호를 입력해주세요.";
+    } else if (formData.password.length < 8) {
       newErrors.password = "비밀번호는 8자 이상이어야 합니다.";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -88,6 +93,11 @@ const LoginPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                 />
+                {errors.email && (
+                  <span className="text-xs text-destructive">
+                    {errors.email}
+                  </span>
+                )}
               </FieldContent>
             </Field>
             <Field>
@@ -103,18 +113,20 @@ const LoginPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                 />
+                {errors.password && (
+                  <span className="text-xs text-destructive">
+                    {errors.password}
+                  </span>
+                )}
               </FieldContent>
             </Field>
           </div>
-          <Activity mode={errors.email ? "visible" : "hidden"}>
-            <span className="text-xs text-destructive">{errors.email}</span>
-          </Activity>
           <div className="space-y-2">
             <Button
               variant="default"
               size="lg"
               type="submit"
-              className="w-full py-8 "
+              className="w-full py-8 cursor-pointer"
             >
               SIGN IN
             </Button>

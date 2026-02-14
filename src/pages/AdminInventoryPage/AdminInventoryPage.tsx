@@ -9,22 +9,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect } from "react";
 import InventoryTable from "./components/InventoryTable";
 import TablePagination from "@/components/common/TablePagination";
 import InventoryModal from "./components/InventoryModal";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-
+import { useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "@/features/store";
+import { getProducts } from "@/features/product/productSlice";
+import { useDispatch } from "react-redux";
 const AdminInventoryPage = () => {
-  const [mode, setMode] = useState<"new" | "edit">("new");
+  const dispatch = useDispatch<AppDispatch>();
+  const { products } = useSelector((state: RootState) => state.product);
 
-  const openAddItemModal = () => {
-    setMode("new");
-  };
+  useEffect(() => {
+    dispatch(
+      getProducts({ page: 1, limit: 10, sort: "createdAt", order: "desc" }),
+    );
+  }, [dispatch]);
 
-  // const openEditItemModal = () => {
-  //   setMode("edit");
-  // };
+  // Uncomment for debugging:
   return (
     <div className="space-y-8">
       {/* 제목 , 상품 추가 버튼 상단구역 */}
@@ -39,19 +42,14 @@ const AdminInventoryPage = () => {
           </h1>
         </div>
         {/* 상품 추가 버튼 */}
-        <Dialog modal={false}>
-          <DialogTrigger asChild>
-            <Button
-              variant="default"
-              className=" p-8 text-xs tracking-[0.2em] font-bold"
-              onClick={openAddItemModal}
-            >
-              상품 추가
-            </Button>
-          </DialogTrigger>
-
-          <InventoryModal mode={mode} />
-        </Dialog>
+        <InventoryModal mode="new">
+          <Button
+            variant="default"
+            className=" p-8 text-xs tracking-[0.2em] font-bold"
+          >
+            상품 추가
+          </Button>
+        </InventoryModal>
       </div>
       <Separator />
       {/* 검색 및 필터 구역 */}
@@ -83,7 +81,7 @@ const AdminInventoryPage = () => {
         </div>
       </div>
       {/* 상품 목록 구역 */}
-      <InventoryTable />
+      <InventoryTable products={products || []} />
       {/* 페이지네이션 구역 */}
       <TablePagination />
     </div>
