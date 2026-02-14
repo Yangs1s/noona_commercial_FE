@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { showToastMessage } from "@/features/common/uiSlice";
 import { api } from "@/utils/api";
 import axios from "axios";
-import type { AppDispatch } from "../store";
-// import { initialCart } from "@/features/cart/cartSlice";
 interface User {
   _id: string;
   email: string;
