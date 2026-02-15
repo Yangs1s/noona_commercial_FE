@@ -1,9 +1,11 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_BACKEND_PROXY
+  ? `${import.meta.env.VITE_BACKEND_PROXY}/api`
+  : "/api";
+
 export const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_PROXY}/api`,
-  // baseURL: "/api",
-  // baseURL: "http://localhost:5001/api",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
