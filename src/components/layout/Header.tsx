@@ -69,18 +69,20 @@ export default function Header() {
               <Button
                 variant={"ghost"}
                 size="icon"
+                className="cursor-pointer"
                 onClick={() => dispatch(logout({ navigate }))}
               >
                 <LogOut className="size-5" />
               </Button>
             </div>
           ) : (
-            <Link
-              to="/login"
-              className="hidden sm:block text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+            <Button
+              asChild
+              variant="ghost"
+              className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
             >
-              Login
-            </Link>
+              <Link to="/login">Login</Link>
+            </Button>
           )}
           <Button
             variant={"ghost"}
@@ -100,40 +102,52 @@ export default function Header() {
       {/* 모바일 메뉴 */}
       {mobileMenuOpen && (
         <nav className="md:hidden border-t border-border px-4 py-6 space-y-4 bg-white dark:bg-background">
-          <Link
-            className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
-            to="/new-arrivals"
-            onClick={() => setMobileMenuOpen(false)}
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
           >
-            New Arrivals
-          </Link>
-          <Link
-            className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
-            to="/collections"
-            onClick={() => setMobileMenuOpen(false)}
+            <Link to="/new-arrivals" onClick={() => setMobileMenuOpen(false)}>
+              New Arrivals
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
           >
-            Collections
-          </Link>
-          <Link
-            className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
-            to="/about"
-            onClick={() => setMobileMenuOpen(false)}
+            <Link to="/collections" onClick={() => setMobileMenuOpen(false)}>
+              Collections
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
           >
-            About
-          </Link>
+            <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
+              About
+            </Link>
+          </Button>
           <div className="border-t border-border pt-4">
             {user ? (
-              <div className="space-y-4">
-                <Link
-                  to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
-                  className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
-                  onClick={() => setMobileMenuOpen(false)}
+              <div className="space-y-1">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
                 >
-                  <User className="size-4" />
-                  My Page
-                </Link>
-                <button
-                  className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
+                  <Link
+                    to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <User className="size-4" />
+                    My Page
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
                   onClick={() => {
                     dispatch(logout({ navigate }));
                     setMobileMenuOpen(false);
@@ -141,16 +155,18 @@ export default function Header() {
                 >
                   <LogOut className="size-4" />
                   Logout
-                </button>
+                </Button>
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="block text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary py-2"
-                onClick={() => setMobileMenuOpen(false)}
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
               >
-                Login
-              </Link>
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                  Login
+                </Link>
+              </Button>
             )}
           </div>
         </nav>

@@ -8,13 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/features/store";
 import { showToastMessage } from "@/features/common/uiSlice";
 import { loginWithEmail } from "@/features/user/userSlice";
-
+import { Eye, EyeOff } from "lucide-react";
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector<RootState, RootState["user"]>(
@@ -70,19 +71,19 @@ const LoginPage = () => {
   }, [user, token, navigate]);
 
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center px-4 sm:px-6">
       {/* 로그인 박스 */}
-      <div className="flex-1 flex flex-col my-auto space-y-12 w-full max-w-lg  p-4 rounded-lg">
+      <div className="flex-1 flex flex-col my-auto space-y-8 md:space-y-12 w-full max-w-lg py-8 md:py-0 rounded-lg">
         <div className="flex flex-col items-center justify-center">
-          <ShopLogoIcon size={100} />
-          <h1 className="text-sm font-bold tracking-[0.2em] uppercase">
+          <ShopLogoIcon size={80} />
+          <h1 className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase">
             SHOPMINIMAL ACCOUNT
           </h1>
         </div>
-        <form onSubmit={onSubmit} className="space-y-8">
-          <div className="space-y-8 mb-12">
+        <form onSubmit={onSubmit} className="space-y-6 md:space-y-8">
+          <div className="space-y-6 md:space-y-8 mb-8 md:mb-12">
             <Field>
-              <FieldLabel className="text-sm tracking-[0.2em] font-medium">
+              <FieldLabel className="text-xs sm:text-sm tracking-[0.2em] font-medium">
                 EMAIL
               </FieldLabel>
               <FieldContent>
@@ -93,6 +94,7 @@ const LoginPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                 />
+
                 {errors.email && (
                   <span className="text-xs text-destructive">
                     {errors.email}
@@ -101,18 +103,31 @@ const LoginPage = () => {
               </FieldContent>
             </Field>
             <Field>
-              <FieldLabel className="text-sm tracking-[0.2em] font-medium">
+              <FieldLabel className="text-xs sm:text-sm tracking-[0.2em] font-medium">
                 PASSWORD
               </FieldLabel>
               <FieldContent>
-                <Input
-                  name="password"
-                  type="password"
-                  variant="ghost"
-                  placeholder="비밀번호를 입력해주세요"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
+                <div className="relative">
+                  <Input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    variant="ghost"
+                    placeholder="비밀번호를 입력해주세요"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  {showPassword ? (
+                    <Eye
+                      className={`size-6 text-gray-400 cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 `}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  ) : (
+                    <EyeOff
+                      className={`size-6 text-gray-400 cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 `}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  )}
+                </div>
                 {errors.password && (
                   <span className="text-xs text-destructive">
                     {errors.password}
@@ -126,7 +141,7 @@ const LoginPage = () => {
               variant="default"
               size="lg"
               type="submit"
-              className="w-full py-8 cursor-pointer"
+              className="w-full py-6 md:py-8 cursor-pointer"
             >
               SIGN IN
             </Button>
@@ -134,7 +149,7 @@ const LoginPage = () => {
               variant="outline"
               size="lg"
               type="submit"
-              className="w-full py-8 "
+              className="w-full py-6 md:py-8"
             >
               <GoogleIcon />
               CONTINUE WITH GOOGLE
@@ -144,7 +159,12 @@ const LoginPage = () => {
                 CONTINUE WITH
               </span>
             </OrSeparator>
-            <Button asChild variant="outline" size="lg" className="w-full py-8">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full py-6 md:py-8"
+            >
               <Link to="/signup">CREATE ACCOUNT</Link>
             </Button>
           </div>

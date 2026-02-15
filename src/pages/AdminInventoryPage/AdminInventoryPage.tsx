@@ -27,6 +27,7 @@ const AdminInventoryPage = () => {
     );
   }, [dispatch]);
 
+  console.log("products", products);
   // Uncomment for debugging:
   return (
     <div className="space-y-8">
@@ -81,9 +82,12 @@ const AdminInventoryPage = () => {
         </div>
       </div>
       {/* 상품 목록 구역 */}
-      <InventoryTable products={products || []} />
+      <InventoryTable products={products?.data || []} />
       {/* 페이지네이션 구역 */}
-      <TablePagination />
+      <TablePagination
+        totalPages={products?.totalPages || 0}
+        currentPage={products?.currentPage || 1}
+      />
     </div>
   );
 };

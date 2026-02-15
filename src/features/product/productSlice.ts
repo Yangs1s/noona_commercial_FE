@@ -3,15 +3,25 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
 import type { Product } from "@/types/product.type";
 import axios from "axios";
-
+interface ProductResponse {
+  data: Product[];
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
 interface ProductState {
-  products: Product[] | null;
+  products: ProductResponse | null;
   isLoading: boolean;
   error: string | null;
   success: boolean;
 }
 const initialState: ProductState = {
-  products: null,
+  products: {
+    data: [],
+    totalPages: 0,
+    currentPage: 0,
+    itemsPerPage: 0,
+  },
   isLoading: false,
   error: null,
   success: false,
@@ -39,7 +49,6 @@ export const getProducts = createAsyncThunk(
           order,
         },
       });
-      console.log(response.data);
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -71,7 +80,7 @@ export const productSlice = createSlice({
     });
     builder.addCase(getProducts.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.products = action.payload.data;
+      state.products = action.payload;
       state.success = true;
     });
     builder.addCase(getProducts.rejected, (state, action) => {

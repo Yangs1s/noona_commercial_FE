@@ -82,15 +82,15 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex-1 flex  items-center justify-center">
-      <div className="flex-1 flex flex-col my-auto space-y-12 w-full max-w-lg  p-4 rounded-lg">
+    <div className="flex-1 flex items-center justify-center px-4 sm:px-6">
+      <div className="flex-1 flex flex-col my-auto space-y-8 md:space-y-12 w-full max-w-lg py-8 md:py-0 rounded-lg">
         <div className="flex flex-col items-center justify-center">
-          <ShopLogoIcon size={100} />
-          <h1 className="text-sm font-bold tracking-[0.2em] uppercase">
+          <ShopLogoIcon size={80} />
+          <h1 className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase">
             SHOPMINIMAL ACCOUNT
           </h1>
         </div>
-        <form onSubmit={onSubmit} className="space-y-8">
+        <form onSubmit={onSubmit} className="space-y-6 md:space-y-8">
           <FieldGroup>
             <Field>
               <FieldLabel
@@ -252,7 +252,7 @@ const SignupPage = () => {
               variant="outline"
               size="lg"
               type="submit"
-              className="w-full py-8 cursor-pointer"
+              className="w-full py-6 md:py-8 cursor-pointer"
             >
               CREATE ACCOUNT
             </Button>
