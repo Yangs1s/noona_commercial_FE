@@ -16,14 +16,18 @@ import CloudinaryUploadWidget from "@/utils/CloudinaryUploadWidget.tsx";
 import CategorySelector from "./CategorySelector";
 import StockManager from "./StockManager";
 import { useProductForm } from "@/hooks/useProductForm";
+import { useState } from "react";
 
 const InventoryModal = ({
   mode,
   children,
+  onSuccess,
 }: {
   mode: "new" | "edit";
   children: React.ReactNode;
+  onSuccess?: () => void;
 }) => {
+  const [open, setOpen] = useState(false);
   const {
     formData,
     handleChange,
@@ -37,7 +41,7 @@ const InventoryModal = ({
   } = useProductForm(mode);
 
   return (
-    <Dialog modal={false}>
+    <Dialog modal={false} open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         className="max-w-2xl max-h-[90vh] overflow-y-auto"
@@ -161,7 +165,7 @@ const InventoryModal = ({
       </form>
 
       <DialogFooter className="border-t border-gray-200 pt-4">
-        <Button onClick={handleSubmit}>
+        <Button onClick={() => handleSubmit(() => { setOpen(false); onSuccess?.(); })}>
           {mode === "new" ? "상품 추가" : "수정 완료"}
         </Button>
       </DialogFooter>

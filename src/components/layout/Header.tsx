@@ -1,4 +1,4 @@
-import { Search, ShoppingCart, Menu, User, LogOut, X } from "lucide-react";
+import { Search, ShoppingCart, Menu, User, LogOut, X, LayoutDashboard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useSelector, useDispatch } from "react-redux";
@@ -63,7 +63,11 @@ export default function Header() {
                 to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
               >
                 <Button variant={"ghost"} size="icon">
-                  <User className="size-5" />
+                  {user.level === "admin" ? (
+                    <LayoutDashboard className="size-5" />
+                  ) : (
+                    <User className="size-5" />
+                  )}
                 </Button>
               </Link>
               <Button
@@ -141,8 +145,12 @@ export default function Header() {
                     to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <User className="size-4" />
-                    My Page
+                    {user.level === "admin" ? (
+                      <LayoutDashboard className="size-4" />
+                    ) : (
+                      <User className="size-4" />
+                    )}
+                    {user.level === "admin" ? "Admin" : "My Page"}
                   </Link>
                 </Button>
                 <Button

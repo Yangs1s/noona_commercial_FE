@@ -32,22 +32,15 @@ interface QueryParams {
   limit: number;
   sort: "createdAt" | "updatedAt" | "name" | "price";
   order: "asc" | "desc";
+  query: string;
 }
-
-export const getProducts = createAsyncThunk(
-  "product/getProducts",
-  async (
-    { page, limit, sort, order }: QueryParams,
-    { rejectWithValue, dispatch },
-  ) => {
+// 고객 혹은 비로그인 사용자가 상품을 조회할 때 사용하는 컨트롤러
+export const getProductsByCustomer = createAsyncThunk(
+  "product/getProductsByCustomer",
+  async (queryParams: QueryParams, { rejectWithValue, dispatch }) => {
     try {
-      const response = await api.get("/product", {
-        params: {
-          page,
-          limit,
-          sort,
-          order,
-        },
+      const response = await api.get("/product/customer", {
+        params: { ...queryParams },
       });
       return response.data;
     } catch (error: unknown) {
@@ -64,7 +57,54 @@ export const getProducts = createAsyncThunk(
     }
   },
 );
-
+export const getProducts = createAsyncThunk(
+  "product/getProducts",
+  async (queryParams: QueryParams, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.get("/product", {
+        params: { ...queryParams },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.error);
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
+export const createProduct = createAsyncThunk(
+  "product/createProduct",
+  async (product: Omit<Product, "_id">, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.post("/product/create", product);
+      dispatch(
+        showToastMessage({
+          message: response.data.status,
+          status: "success",
+        }),
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.error);
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
 export const productSlice = createSlice({
   name: "product",
   initialState: initialState,
@@ -75,6 +115,18 @@ export const productSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(createProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(createProduct.fulfilled, (state) => {
+      state.isLoading = false;
+      state.success = true;
+    });
+    builder.addCase(createProduct.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message as string;
+      state.success = false;
+    });
     builder.addCase(getProducts.pending, (state) => {
       state.isLoading = true;
     });

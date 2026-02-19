@@ -17,9 +17,7 @@ export default function PrivateRoutes({ permissionLevel }: PrivateRoutesProps) {
     return <div>Loading...</div>;
   }
 
-  return user?.level === permissionLevel ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  const hasPermission =
+    user?.level === permissionLevel || user?.level === "admin";
+  return hasPermission ? <Outlet /> : <Navigate to="/login" replace />;
 }

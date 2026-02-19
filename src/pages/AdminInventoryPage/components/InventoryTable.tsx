@@ -9,20 +9,40 @@ import {
 import { Pencil, Trash2 } from "lucide-react";
 import type { Product } from "@/types/product.type";
 import InventoryModal from "./InventoryModal";
-const InventoryTable = ({ products }: { products: Product[] }) => {
+
+type ColumnDef = {
+  label: string;
+  width: string;
+};
+
+const DEFAULT_HEADERS: ColumnDef[] = [
+  { label: "상품 이름", width: "w-[12%]" },
+  { label: "SKU", width: "w-[10%]" },
+  { label: "가격", width: "w-[8%]" },
+  { label: "설명", width: "w-[20%]" },
+  { label: "이미지", width: "w-[14%]" },
+  { label: "카테고리", width: "w-[12%]" },
+  { label: "재고", width: "w-[12%]" },
+  { label: "상태", width: "w-[8%]" },
+  { label: "관리", width: "w-[8%]" },
+];
+
+const InventoryTable = ({
+  products,
+  headers = DEFAULT_HEADERS,
+}: {
+  products: Product[];
+  headers?: ColumnDef[];
+}) => {
   return (
     <Table className="table-fixed">
       <TableHeader>
         <TableRow>
-          <TableHead className="text-gray-500 w-[12%]">상품 이름</TableHead>
-          <TableHead className="text-gray-500 w-[10%]">SKU</TableHead>
-          <TableHead className="text-gray-500 w-[8%]">가격</TableHead>
-          <TableHead className="text-gray-500 w-[20%]">설명</TableHead>
-          <TableHead className="text-gray-500 w-[8%]">이미지</TableHead>
-          <TableHead className="text-gray-500 w-[12%]">카테고리</TableHead>
-          <TableHead className="text-gray-500 w-[12%]">재고</TableHead>
-          <TableHead className="text-gray-500 w-[8%]">상태</TableHead>
-          <TableHead className="text-gray-500 w-[10%]">관리</TableHead>
+          {headers.map((col) => (
+            <TableHead key={col.label} className={`text-gray-500 ${col.width}`}>
+              {col.label}
+            </TableHead>
+          ))}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -31,13 +51,15 @@ const InventoryTable = ({ products }: { products: Product[] }) => {
             <TableRow className="h-16" key={product._id}>
               <TableCell className="truncate">{product.name}</TableCell>
               <TableCell className="truncate">{product.sku}</TableCell>
-              <TableCell className="truncate">{product.price}</TableCell>
+              <TableCell className="truncate">
+                {product.price.toLocaleString()}
+              </TableCell>
               <TableCell className="truncate">{product.description}</TableCell>
               <TableCell>
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-10 h-10 object-cover"
+                  className="w-full max-h-[320px] object-cover"
                 />
               </TableCell>
               <TableCell className="truncate">

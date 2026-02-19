@@ -1,5 +1,5 @@
-import { showToastMessage } from "@/features/common/uiSlice";
-import { api } from "@/utils/api";
+import { createProduct } from "@/features/product/productSlice";
+import type { AppDispatch } from "@/features/store";
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -34,7 +34,7 @@ export const useProductForm = (mode: "new" | "edit") => {
   const [formData, setFormData] = useState<FormData>(
     mode === "new" ? INITIAL_FORM_DATA : INITIAL_FORM_DATA,
   );
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [error, setError] = useState<Partial<
     Record<keyof FormData, string>
   > | null>(null);
@@ -118,20 +118,21 @@ export const useProductForm = (mode: "new" | "edit") => {
     [],
   );
 
-  const handleSubmit = async () => {
+  const resetForm = () => {
+    setFormData(INITIAL_FORM_DATA);
+    setError(null);
+  };
+
+  const handleSubmit = async (onSuccess?: () => void) => {
     if (!validate()) return;
     if (mode === "new") {
       try {
-        const response = await api.post("/product/create", formData);
-        console.log(response.data);
-        dispatch(
-          showToastMessage({
-            message: response.data.status,
-            status: "success",
-          }),
-        );
+        await dispatch(createProduct(formData)).unwrap();
+        resetForm();
+        onSuccess?.();
       } catch (error) {
-        console.error(error);
+        // 에러 토스트는 썽크 내부에서 처리
+        console.log(error);
       }
     } else {
       console.log("상품 수정");

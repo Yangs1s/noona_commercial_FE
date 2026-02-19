@@ -103,9 +103,7 @@ export default function AdminLayout({
         <div className="p-8 border-t border-border">
           <div className="flex items-center gap-3">
             <div className="size-2 bg-border rounded-full" />
-            <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
-              v2.4.0 Stable
-            </span>
+            <Link to="/">Shop으로 돌아가기</Link>
           </div>
         </div>
       </aside>
@@ -146,7 +144,9 @@ export default function AdminLayout({
           </div>
         </header>
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 lg:py-12">{children}</main>
+        <main className="flex-1 px-4 sm:px-6 lg:px-12 py-6 lg:py-12">
+          {children}
+        </main>
       </div>
 
       <ToastContainer position="top-right" autoClose={1000} />
