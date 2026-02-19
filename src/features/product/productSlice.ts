@@ -84,6 +84,7 @@ export const createProduct = createAsyncThunk(
   async (product: Omit<Product, "_id">, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.post("/product/create", product);
+      console.log(response.data);
       dispatch(
         showToastMessage({
           message: response.data.status,
@@ -136,6 +137,19 @@ export const productSlice = createSlice({
       state.success = true;
     });
     builder.addCase(getProducts.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message as string;
+      state.success = false;
+    });
+    builder.addCase(getProductsByCustomer.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getProductsByCustomer.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload;
+      state.success = true;
+    });
+    builder.addCase(getProductsByCustomer.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message as string;
       state.success = false;

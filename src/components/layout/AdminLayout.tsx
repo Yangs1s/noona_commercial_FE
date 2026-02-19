@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import { ToastContainer } from "react-toastify";
+import { ToastMessage } from "@/components/common/ToastMessage";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/features/store";
@@ -149,7 +149,7 @@ export default function AdminLayout({
         </main>
       </div>
 
-      <ToastContainer position="top-right" autoClose={1000} />
+      <ToastMessage />
     </div>
   );
 }

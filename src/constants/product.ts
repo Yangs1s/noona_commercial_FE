@@ -7,9 +7,13 @@ export const SIZE_OPTIONS = [
 ];
 
 export const CATEGORY_OPTIONS = [
-  { label: "카테고리 1", value: "1" },
-  { label: "카테고리 2", value: "2" },
-  { label: "카테고리 3", value: "3" },
+  { label: "스포츠웨어", value: "sportswear" },
+  { label: "상의", value: "top" },
+  { label: "아우터", value: "outerwear" },
+  { label: "데님", value: "denim" },
+  { label: "드레스", value: "dress" },
+  { label: "액세서리", value: "accessory" },
+  { label: "잡화", value: "miscellaneous" },
 ];
 
 export const STATUS_OPTIONS = [

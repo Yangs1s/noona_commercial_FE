@@ -7,13 +7,14 @@ import LoginPage from "@/pages/LoginPage/LoginPage";
 import SignupPage from "@/pages/SignupPage/SignupPage";
 import ProductListPage from "@/pages/ProductList/ProductListpage";
 import AdminInventoryPage from "@/pages/AdminInventoryPage/AdminInventoryPage";
+import ProductPage from "@/pages/ProductDetail/ProductPage";
 
 export default function AppRouter() {
   return (
     <Routes>
       {/* User */}
       <Route path="/" element={<ProductListPage />} />
-      <Route path="/product/:id" element={<div>ProductDetailPage</div>} />
+      <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route element={<PrivateRoutes permissionLevel={"customer"} />}>
