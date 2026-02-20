@@ -1,7 +1,7 @@
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 import { Link } from "react-router-dom";
 interface Props {
-  product: Product;
+  product: ProductType;
 }
 
 const ProductCard = ({ product }: Props) => {
