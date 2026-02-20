@@ -1,9 +1,11 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import type { RootState } from "@/features/store";
+import { hideToastMessage } from "@/features/common/uiSlice";
 
 export const ToastMessage = () => {
+  const dispatch = useDispatch();
   const { toastMessage } = useSelector((state: RootState) => state.ui);
 
   useEffect(() => {
@@ -11,9 +13,11 @@ export const ToastMessage = () => {
       const { message, status } = toastMessage;
       if (message !== "" && status !== "") {
         toast[status](message, { theme: "colored" });
+        // 토스트 표시 후 즉시 Redux 스토어 초기화
+        dispatch(hideToastMessage());
       }
     }
-  }, [toastMessage]);
+  }, [toastMessage, dispatch]);
   return (
     <ToastContainer
       position="top-right"
