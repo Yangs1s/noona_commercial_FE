@@ -1,19 +1,20 @@
 import { api } from "@/utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 import axios from "axios";
 interface ProductResponse {
-  data: Product[];
+  data: ProductType[];
   totalPages: number;
   currentPage: number;
   itemsPerPage: number;
 }
 interface ProductState {
   products: ProductResponse | null;
-  isLoading: boolean;
-  error: string | null;
-  success: boolean;
+  product: ProductType | null;
+  productLoading: boolean;
+  productError: string | null;
+  productSuccess: boolean;
 }
 const initialState: ProductState = {
   products: {
@@ -22,9 +23,10 @@ const initialState: ProductState = {
     currentPage: 0,
     itemsPerPage: 0,
   },
-  isLoading: false,
-  error: null,
-  success: false,
+  product: null,
+  productLoading: false,
+  productError: null,
+  productSuccess: false,
 };
 
 interface QueryParams {
@@ -81,16 +83,17 @@ export const getProducts = createAsyncThunk(
 );
 export const createProduct = createAsyncThunk(
   "product/createProduct",
-  async (product: Omit<Product, "_id">, { rejectWithValue, dispatch }) => {
+  async (product: Omit<ProductType, "_id">, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.post("/product/create", product);
-      console.log(response.data);
+
       dispatch(
         showToastMessage({
           message: response.data.status,
           status: "success",
         }),
       );
+
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -135,7 +138,7 @@ export const deleteProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   "product/updateProduct",
-  async (product: Product, { rejectWithValue, dispatch }) => {
+  async (product: ProductType, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.put(`/product/${product._id}`, product);
       dispatch(
@@ -160,71 +163,105 @@ export const updateProduct = createAsyncThunk(
   },
 );
 
+export const getProductById = createAsyncThunk(
+  "product/getProductById",
+  async (id: string, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.get(`/product/${id}`);
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.error);
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const productSlice = createSlice({
   name: "product",
   initialState: initialState,
   reducers: {
     clearErrors: (state) => {
-      state.error = null;
-      state.success = false;
+      state.productError = null;
+      state.productSuccess = false;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(createProduct.pending, (state) => {
-      state.isLoading = true;
+      state.productLoading = true;
     });
     builder.addCase(createProduct.fulfilled, (state) => {
-      state.isLoading = false;
-      state.success = true;
+      state.productLoading = false;
+      state.productSuccess = true;
     });
     builder.addCase(createProduct.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message as string;
-      state.success = false;
+      state.productLoading = false;
+      state.productError = action.error.message as string;
+      state.productSuccess = false;
     });
     builder.addCase(getProducts.pending, (state) => {
-      state.isLoading = true;
+      state.productLoading = true;
     });
     builder.addCase(getProducts.fulfilled, (state, action) => {
-      state.isLoading = false;
+      state.productLoading = false;
       state.products = action.payload;
-      state.success = true;
+      state.productSuccess = true;
     });
     builder.addCase(getProducts.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message as string;
-      state.success = false;
+      state.productLoading = false;
+      state.productError = action.error.message as string;
+      state.productSuccess = false;
     });
     builder.addCase(getProductsByCustomer.pending, (state) => {
-      state.isLoading = true;
+      state.productLoading = true;
     });
     builder.addCase(getProductsByCustomer.fulfilled, (state, action) => {
-      state.isLoading = false;
+      state.productLoading = false;
       state.products = action.payload;
-      state.success = true;
+      state.productSuccess = true;
     });
     builder.addCase(getProductsByCustomer.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message as string;
-      state.success = false;
+      state.productLoading = false;
+      state.productError = action.error.message as string;
+      state.productSuccess = false;
     });
     builder.addCase(deleteProduct.fulfilled, (state) => {
-      state.isLoading = false;
-      state.success = true;
+      state.productLoading = false;
+      state.productSuccess = true;
     });
     builder.addCase(deleteProduct.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message as string;
-      state.success = false;
+      state.productLoading = false;
+      state.productError = action.error.message as string;
+      state.productSuccess = false;
     });
     builder.addCase(updateProduct.fulfilled, (state) => {
-      state.isLoading = false;
-      state.success = true;
+      state.productLoading = false;
+      state.productSuccess = true;
     });
     builder.addCase(updateProduct.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message as string;
-      state.success = false;
+      state.productLoading = false;
+      state.productError = action.error.message as string;
+      state.productSuccess = false;
+    });
+    builder.addCase(getProductById.pending, (state) => {
+      state.productLoading = true;
+    });
+    builder.addCase(getProductById.fulfilled, (state, action) => {
+      state.productLoading = false;
+      state.product = action.payload.product;
+      state.productSuccess = true;
+    });
+    builder.addCase(getProductById.rejected, (state, action) => {
+      state.productLoading = false;
+      state.productError = action.error.message as string;
+      state.productSuccess = false;
     });
   },
 });

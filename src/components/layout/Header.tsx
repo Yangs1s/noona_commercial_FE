@@ -1,4 +1,12 @@
-import { Search, ShoppingCart, Menu, User, LogOut, X, LayoutDashboard } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  Menu,
+  User,
+  LogOut,
+  X,
+  LayoutDashboard,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +21,10 @@ export default function Header() {
   const { user } = useSelector<RootState, RootState["user"]>(
     (state) => state.user,
   );
+  const { cartQty } = useSelector<RootState, RootState["cart"]>(
+    (state) => state.cart,
+  );
+  console.log(cartQty);
   return (
     <header className="sticky top-0 bg-white/90 dark:bg-background/90 backdrop-blur-md z-50 border-b border-border">
       <div className="flex items-center justify-between px-4 sm:px-6 md:px-12 py-6 md:py-8">
@@ -50,11 +62,11 @@ export default function Header() {
           </Button>
 
           <div className="relative">
-            <Button variant={"ghost"} size="icon">
+            <Link to="/cart">
               <ShoppingCart className="size-5" />
-            </Button>
+            </Link>
             <span className="absolute -top-1 -right-1 bg-primary dark:bg-white text-[8px] text-white dark:text-black size-3.5 flex items-center justify-center rounded-full font-bold">
-              1
+              {cartQty}
             </span>
           </div>
           {user ? (

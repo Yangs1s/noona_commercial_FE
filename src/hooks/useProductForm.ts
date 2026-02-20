@@ -125,19 +125,16 @@ export const useProductForm = (mode: "new" | "edit", product?: Product) => {
 
   const handleSubmit = async (onSuccess?: () => void) => {
     if (!validate()) return;
-    if (mode === "new") {
-      try {
-        await dispatch(createProduct(formData)).unwrap();
-        resetForm();
-        onSuccess?.();
-      } catch (error) {
-        // 에러 토스트는 썽크 내부에서 처리
-        console.log(error);
-      }
-    } else {
-      console.log("상품 수정");
+    try {
+      await dispatch(createProduct(formData)).unwrap();
+      resetForm();
+      onSuccess?.();
+    } catch (error) {
+      // 에러 토스트는 썽크 내부에서 처리
+      console.log(error);
     }
   };
+
   const handleUpdateProduct = async (
     onSuccess?: () => void,
     product?: Product,

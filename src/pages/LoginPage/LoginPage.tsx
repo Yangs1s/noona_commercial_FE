@@ -37,10 +37,9 @@ const LoginPage = () => {
     }
     if (!formData.password) {
       newErrors.password = "비밀번호를 입력해주세요.";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "비밀번호는 8자 이상이어야 합니다.";
     }
-    // else if (formData.password.length < 8) {
-    //   newErrors.password = "비밀번호는 8자 이상이어야 합니다.";
-    // }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
