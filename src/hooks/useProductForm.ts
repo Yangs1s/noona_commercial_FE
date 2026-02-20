@@ -1,6 +1,6 @@
 import { createProduct, updateProduct } from "@/features/product/productSlice";
 import type { AppDispatch } from "@/features/store";
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 interface StockItem {
@@ -30,7 +30,7 @@ const INITIAL_FORM_DATA: FormData = {
   status: "",
 };
 
-export const useProductForm = (mode: "new" | "edit", product?: Product) => {
+export const useProductForm = (mode: "new" | "edit", product?: ProductType) => {
   const [formData, setFormData] = useState<FormData>(
     mode === "new" ? INITIAL_FORM_DATA : product || INITIAL_FORM_DATA,
   );
@@ -137,11 +137,11 @@ export const useProductForm = (mode: "new" | "edit", product?: Product) => {
 
   const handleUpdateProduct = async (
     onSuccess?: () => void,
-    product?: Product,
+    product?: ProductType,
   ) => {
     try {
       await dispatch(
-        updateProduct({ ...(product as Product), ...formData }),
+        updateProduct({ ...(product as ProductType), ...formData }),
       ).unwrap();
       onSuccess?.();
     } catch (error) {
