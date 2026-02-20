@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil, Trash2 } from "lucide-react";
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 import InventoryModal from "./InventoryModal";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/features/store";
@@ -33,7 +33,7 @@ const InventoryTable = ({
   products,
   headers = DEFAULT_HEADERS,
 }: {
-  products: Product[];
+  products: ProductType[];
   headers?: ColumnDef[];
 }) => {
   const dispatch = useDispatch<AppDispatch>();

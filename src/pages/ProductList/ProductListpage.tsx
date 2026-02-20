@@ -9,7 +9,7 @@ import ProductCard from "./components/ProductCard";
 
 const ProductListPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { products, isLoading } = useSelector(
+  const { products, productLoading } = useSelector(
     (state: RootState) => state.product,
   );
 
@@ -58,7 +58,7 @@ const ProductListPage = () => {
       />
 
       <section className="flex flex-1 flex-col px-10 py-12">
-        {isLoading ? (
+        {productLoading ? (
           <div className="flex flex-1 items-center justify-center text-sm tracking-widest text-gray-300">
             로딩 중...
           </div>

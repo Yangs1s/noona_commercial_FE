@@ -17,7 +17,7 @@ import CategorySelector from "./CategorySelector";
 import StockManager from "./StockManager";
 import { useProductForm } from "@/hooks/useProductForm";
 import { useState } from "react";
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 
 const InventoryModal = ({
   mode,
@@ -28,7 +28,7 @@ const InventoryModal = ({
   mode: "new" | "edit";
   children: React.ReactNode;
   onSuccess?: () => void;
-  product?: Product;
+  product?: ProductType;
 }) => {
   const [open, setOpen] = useState(false);
   const {

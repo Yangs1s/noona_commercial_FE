@@ -1,7 +1,7 @@
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 
 interface ProductInfoProps {
-  product: Product;
+  product: ProductType;
 }
 
 export const ProductInfo = ({ product }: ProductInfoProps) => {
