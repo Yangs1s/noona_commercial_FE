@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch, RootState } from "@/features/store";
-import type { Product } from "@/types/product.type";
+import type { ProductType } from "@/types/product.type";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/features/cart/cartSlice";
 import { showToastMessage } from "@/features/common/uiSlice";
 
 interface ProductOptionsProps {
-  product: Product;
+  product: ProductType;
 }
 
 export const ProductOptions = ({ product }: ProductOptionsProps) => {
