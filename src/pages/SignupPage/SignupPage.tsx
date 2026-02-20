@@ -45,8 +45,8 @@ const SignupPage = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email))
       newErrors.email = "이메일 형식이 올바르지 않습니다.";
-    if (formData.password.length < 8)
-      newErrors.password = "비밀번호는 8자 이상이어야 합니다.";
+    // if (formData.password.length < 8)
+    //   newErrors.password = "비밀번호는 8자 이상이어야 합니다.";
     if (formData.name.length < 1)
       newErrors.name = "이름은 1자 이상이어야 합니다.";
     if (formData.address.length < 1)

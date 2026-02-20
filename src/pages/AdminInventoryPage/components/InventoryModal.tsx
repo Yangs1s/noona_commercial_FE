@@ -17,15 +17,18 @@ import CategorySelector from "./CategorySelector";
 import StockManager from "./StockManager";
 import { useProductForm } from "@/hooks/useProductForm";
 import { useState } from "react";
+import type { Product } from "@/types/product.type";
 
 const InventoryModal = ({
   mode,
   children,
   onSuccess,
+  product,
 }: {
   mode: "new" | "edit";
   children: React.ReactNode;
   onSuccess?: () => void;
+  product?: Product;
 }) => {
   const [open, setOpen] = useState(false);
   const {
@@ -36,9 +39,10 @@ const InventoryModal = ({
     addStockItem,
     removeStockItem,
     handleSubmit,
+    handleUpdateProduct,
     uploadImage,
     uwConfig,
-  } = useProductForm(mode);
+  } = useProductForm(mode, product);
 
   return (
     <Dialog modal={false} open={open} onOpenChange={setOpen}>
@@ -169,10 +173,15 @@ const InventoryModal = ({
         <DialogFooter className="border-t border-gray-200 pt-4">
           <Button
             onClick={() =>
-              handleSubmit(() => {
-                setOpen(false);
-                onSuccess?.();
-              })
+              mode === "new"
+                ? handleSubmit(() => {
+                    setOpen(false);
+                    onSuccess?.();
+                  })
+                : handleUpdateProduct(() => {
+                    setOpen(false);
+                    onSuccess?.();
+                  }, product)
             }
           >
             {mode === "new" ? "상품 추가" : "수정 완료"}

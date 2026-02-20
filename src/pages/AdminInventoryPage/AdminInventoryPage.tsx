@@ -24,7 +24,6 @@ const AdminInventoryPage = () => {
   const { products } = useSelector((state: RootState) => state.product);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log("searchParams", searchParams.get(""));
   // 렌더링시마다 메모를 사용하지 않으면, 검색 쿼리가 변경될 때마다 데이터를 다시 불러오게 됨
   // 동시에 useEffect도 계속 실행되므로, useMemo를 사용하여 한번만 실행되도록 함.
   // 그리고 의존성 배열에 searchParams를 추가하여, searchParams가 변경될 때마다 다시 실행되도록 함.

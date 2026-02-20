@@ -9,7 +9,9 @@ import {
 import { Pencil, Trash2 } from "lucide-react";
 import type { Product } from "@/types/product.type";
 import InventoryModal from "./InventoryModal";
-
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/features/store";
+import { deleteProduct, getProducts } from "@/features/product/productSlice";
 type ColumnDef = {
   label: string;
   width: string;
@@ -34,6 +36,16 @@ const InventoryTable = ({
   products: Product[];
   headers?: ColumnDef[];
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await dispatch(deleteProduct(id)).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Table className="table-fixed">
       <TableHeader>
@@ -79,12 +91,29 @@ const InventoryTable = ({
               </TableCell>
               <TableCell>
                 <div className="flex gap-4">
-                  <InventoryModal mode="edit">
+                  <InventoryModal
+                    mode="edit"
+                    product={product}
+                    onSuccess={() =>
+                      dispatch(
+                        getProducts({
+                          page: 1,
+                          limit: 10,
+                          sort: "createdAt",
+                          order: "desc",
+                          query: "",
+                        }),
+                      )
+                    }
+                  >
                     <button className="text-gray-500 hover:text-gray-800 cursor-pointer">
                       <Pencil size={16} fill="currentColor" />
                     </button>
                   </InventoryModal>
-                  <button className="text-gray-500 hover:text-gray-800 cursor-pointer">
+                  <button
+                    className="text-gray-500 hover:text-gray-800 cursor-pointer"
+                    onClick={() => handleDeleteProduct(product._id)}
+                  >
                     <Trash2 size={16} fill="currentColor" />
                   </button>
                 </div>

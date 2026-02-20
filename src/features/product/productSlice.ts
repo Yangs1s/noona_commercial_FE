@@ -106,6 +106,60 @@ export const createProduct = createAsyncThunk(
     }
   },
 );
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (id: string, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.delete(`/product/${id}`);
+      dispatch(
+        showToastMessage({
+          message: response.data.status,
+          status: "success",
+        }),
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.error);
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async (product: Product, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.put(`/product/${product._id}`, product);
+      dispatch(
+        showToastMessage({
+          message: response.data.status,
+          status: "success",
+        }),
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.error);
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const productSlice = createSlice({
   name: "product",
   initialState: initialState,
@@ -150,6 +204,24 @@ export const productSlice = createSlice({
       state.success = true;
     });
     builder.addCase(getProductsByCustomer.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message as string;
+      state.success = false;
+    });
+    builder.addCase(deleteProduct.fulfilled, (state) => {
+      state.isLoading = false;
+      state.success = true;
+    });
+    builder.addCase(deleteProduct.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message as string;
+      state.success = false;
+    });
+    builder.addCase(updateProduct.fulfilled, (state) => {
+      state.isLoading = false;
+      state.success = true;
+    });
+    builder.addCase(updateProduct.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error.message as string;
       state.success = false;

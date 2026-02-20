@@ -1,8 +1,8 @@
-import { createProduct } from "@/features/product/productSlice";
+import { createProduct, updateProduct } from "@/features/product/productSlice";
 import type { AppDispatch } from "@/features/store";
+import type { Product } from "@/types/product.type";
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-
 interface StockItem {
   size: string;
   quantity: number;
@@ -30,9 +30,9 @@ const INITIAL_FORM_DATA: FormData = {
   status: "",
 };
 
-export const useProductForm = (mode: "new" | "edit") => {
+export const useProductForm = (mode: "new" | "edit", product?: Product) => {
   const [formData, setFormData] = useState<FormData>(
-    mode === "new" ? INITIAL_FORM_DATA : INITIAL_FORM_DATA,
+    mode === "new" ? INITIAL_FORM_DATA : product || INITIAL_FORM_DATA,
   );
   const dispatch = useDispatch<AppDispatch>();
   const [error, setError] = useState<Partial<
@@ -138,6 +138,19 @@ export const useProductForm = (mode: "new" | "edit") => {
       console.log("상품 수정");
     }
   };
+  const handleUpdateProduct = async (
+    onSuccess?: () => void,
+    product?: Product,
+  ) => {
+    try {
+      await dispatch(
+        updateProduct({ ...(product as Product), ...formData }),
+      ).unwrap();
+      onSuccess?.();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return {
     formData,
@@ -150,5 +163,6 @@ export const useProductForm = (mode: "new" | "edit") => {
     handleSubmit,
     uploadImage,
     uwConfig,
+    handleUpdateProduct,
   };
 };
