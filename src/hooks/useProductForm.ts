@@ -121,6 +121,7 @@ export const useProductForm = (mode: "new" | "edit", product?: ProductType) => {
     () => ({
       cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
       uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+      z_index: 99999, // Cloudinary 위젯 모달의 z-index 설정
     }),
     [],
   );

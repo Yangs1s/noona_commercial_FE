@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+/* Cloudinary 위젯 모달의 z-index를 Dialog 오버레이보다 높게 설정 */
+/* 가능한 모든 Cloudinary 관련 요소에 적용 */
+.cloudinary-widget-wrapper,
+.cloudinary-widget-overlay,
+#cloudinary-overlay,
+.cloudinary-widget,
+[class*="cloudinary"],
+[id*="cloudinary"],
+.widget,
+.widget_iframe,
+body > div[style*="z-index"] {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+/* Cloudinary iframe의 z-index도 높게 설정 */
+iframe[src*="cloudinary"],
+iframe[src*="widget"],
+iframe[title*="Upload"] {
+  z-index: 99999 !important;
+}
+
+/* 모든 widget 관련 div */
+div[class*="widget"],
+div[id*="widget"] {
+  z-index: 99999 !important;
+}

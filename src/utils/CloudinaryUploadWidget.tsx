@@ -72,7 +72,7 @@ const CloudinaryUploadWidget = <T extends UwConfig>({
       id="upload_widget"
       className="cloudinary-button bg-black text-white z-50"
     >
-        상품이미지 업로드
+      상품이미지 업로드
     </button>
   );
 };
