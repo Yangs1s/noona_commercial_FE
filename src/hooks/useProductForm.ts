@@ -3,6 +3,7 @@ import type { AppDispatch } from "@/features/store";
 import type { ProductType } from "@/types/product.type";
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { sortStockBySize } from "@/utils/stockUtils";
 interface StockItem {
   size: string;
   quantity: number;
@@ -88,22 +89,28 @@ export const useProductForm = (mode: "new" | "edit", product?: ProductType) => {
     setFormData((prev) => {
       const newStock = [...prev.stock];
       newStock[index] = { ...newStock[index], [field]: value };
-      return { ...prev, stock: newStock };
+      // stock 변경 후 자동 정렬
+      const sortedStock = sortStockBySize(newStock);
+      return { ...prev, stock: sortedStock };
     });
   };
 
   const addStockItem = () => {
-    setFormData((prev) => ({
-      ...prev,
-      stock: [...prev.stock, { size: "", quantity: 0 }],
-    }));
+    setFormData((prev) => {
+      const newStock = [...prev.stock, { size: "", quantity: 0 }];
+      // stock 추가 후 자동 정렬
+      const sortedStock = sortStockBySize(newStock);
+      return { ...prev, stock: sortedStock };
+    });
   };
 
   const removeStockItem = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      stock: prev.stock.filter((_, i) => i !== index),
-    }));
+    setFormData((prev) => {
+      const newStock = prev.stock.filter((_, i) => i !== index);
+      // stock 제거 후 자동 정렬 (사실 제거는 정렬이 필요 없지만 일관성 유지)
+      const sortedStock = sortStockBySize(newStock);
+      return { ...prev, stock: sortedStock };
+    });
   };
 
   const uploadImage = useCallback((image: string) => {

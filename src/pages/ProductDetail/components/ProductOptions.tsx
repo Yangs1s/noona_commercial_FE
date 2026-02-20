@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch, RootState } from "@/features/store";
@@ -7,7 +7,7 @@ import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/features/cart/cartSlice";
 import { showToastMessage } from "@/features/common/uiSlice";
-import { SIZE_OPTIONS } from "@/constants/product";
+import { sortStockBySize } from "@/utils/stockUtils";
 
 interface ProductOptionsProps {
   product: ProductType;
@@ -19,6 +19,9 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
   const { user } = useSelector((state: RootState) => state.user);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  // stock을 SIZE_OPTIONS 순서대로 정렬 (메모이제이션)
+  const sortedStock = useMemo(() => sortStockBySize(product.stock), [product.stock]);
 
   const handleAddToCart = () => {
     // 비로그인 회원은 로그인 페이지로 이동
@@ -85,39 +88,28 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
           사이즈 선택
         </h3>
         <div className="flex flex-wrap gap-3">
-          {[...product.stock]
-            .sort((a, b) => {
-              const sizeOrder = SIZE_OPTIONS.map((option) => option.value);
-              const indexA = sizeOrder.indexOf(a.size);
-              const indexB = sizeOrder.indexOf(b.size);
-
-              if (indexA === -1) return 1;
-              if (indexB === -1) return -1;
-
-              return indexA - indexB;
-            })
-            .map((item) => {
-              const isAvailable = item.quantity > 0;
-              const isSelected = selectedSize === item.size;
-              return (
-                <Button
-                  key={item.size}
-                  variant={isSelected ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => isAvailable && handleSizeChange(item.size)}
-                  disabled={!isAvailable}
-                  className={`p-6 tracking-wider ${
-                    isSelected
-                      ? "border-2 border-black bg-black text-white hover:bg-black/90"
-                      : isAvailable
-                        ? "border-gray-300 text-black hover:border-black hover:bg-transparent"
-                        : "cursor-not-allowed border-gray-200 text-gray-300 line-through"
-                  }`}
-                >
-                  {item.size}
-                </Button>
-              );
-            })}
+          {sortedStock.map((item) => {
+            const isAvailable = item.quantity > 0;
+            const isSelected = selectedSize === item.size;
+            return (
+              <Button
+                key={item.size}
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => isAvailable && handleSizeChange(item.size)}
+                disabled={!isAvailable}
+                className={`p-6 tracking-wider ${
+                  isSelected
+                    ? "border-2 border-black bg-black text-white hover:bg-black/90"
+                    : isAvailable
+                      ? "border-gray-300 text-black hover:border-black hover:bg-transparent"
+                      : "cursor-not-allowed border-gray-200 text-gray-300 line-through"
+                }`}
+              >
+                {item.size}
+              </Button>
+            );
+          })}
         </div>
       </div>
 

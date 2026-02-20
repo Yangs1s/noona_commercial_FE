@@ -33,6 +33,7 @@ const InventoryModal = ({
   const [open, setOpen] = useState(false);
   const {
     formData,
+    error,
     handleChange,
     onHandleCategory,
     handleStockChange,
@@ -71,6 +72,9 @@ const InventoryModal = ({
                   value={formData.sku}
                   onChange={(e) => handleChange("sku", e.target.value)}
                 />
+                {error?.sku && (
+                  <span className="text-xs text-destructive">{error.sku}</span>
+                )}
               </FieldContent>
             </Field>
             <Field>
@@ -82,6 +86,9 @@ const InventoryModal = ({
                   value={formData.name}
                   onChange={(e) => handleChange("name", e.target.value)}
                 />
+                {error?.name && (
+                  <span className="text-xs text-destructive">{error.name}</span>
+                )}
               </FieldContent>
             </Field>
           </div>
@@ -99,6 +106,9 @@ const InventoryModal = ({
                     handleChange("price", Number(e.target.value))
                   }
                 />
+                {error?.price && (
+                  <span className="text-xs text-destructive">{error.price}</span>
+                )}
               </FieldContent>
             </Field>
             <Field>
@@ -108,6 +118,9 @@ const InventoryModal = ({
                   selected={formData.category}
                   onChange={onHandleCategory}
                 />
+                {error?.category && (
+                  <span className="text-xs text-destructive">{error.category}</span>
+                )}
               </FieldContent>
             </Field>
           </div>
@@ -121,6 +134,9 @@ const InventoryModal = ({
                 value={formData.description}
                 onChange={(e) => handleChange("description", e.target.value)}
               />
+              {error?.description && (
+                <span className="text-xs text-destructive">{error.description}</span>
+              )}
             </FieldContent>
           </Field>
 
@@ -139,6 +155,9 @@ const InventoryModal = ({
                 uwConfig={uwConfig}
                 setPublicId={uploadImage}
               />
+              {error?.image && (
+                <span className="text-xs text-destructive">{error.image}</span>
+              )}
             </FieldContent>
           </Field>
 
@@ -152,6 +171,9 @@ const InventoryModal = ({
                 onAdd={addStockItem}
                 onRemove={removeStockItem}
               />
+              {error?.stock && (
+                <span className="text-xs text-destructive">{error.stock}</span>
+              )}
             </FieldContent>
           </Field>
 
@@ -166,6 +188,9 @@ const InventoryModal = ({
                 placeholder="상태를 선택해주세요"
                 className="w-full"
               />
+              {error?.status && (
+                <span className="text-xs text-destructive">{error.status}</span>
+              )}
             </FieldContent>
           </Field>
         </form>
