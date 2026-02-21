@@ -58,7 +58,16 @@ const InventoryTable = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {products &&
+        {products.length === 0 ? (
+          <TableRow>
+            <TableCell
+              colSpan={headers.length}
+              className="py-16 text-center text-sm tracking-widest text-gray-300"
+            >
+              검색 결과가 없습니다
+            </TableCell>
+          </TableRow>
+        ) : (
           products.map((product) => (
             <TableRow className="h-16" key={product._id}>
               <TableCell className="truncate">{product.name}</TableCell>
@@ -119,7 +128,8 @@ const InventoryTable = ({
                 </div>
               </TableCell>
             </TableRow>
-          ))}
+          ))
+        )}
       </TableBody>
     </Table>
   );
