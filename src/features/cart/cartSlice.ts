@@ -1,6 +1,7 @@
 import { api } from "@/utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
+import { createOrder } from "../order/orderSlice";
 import axios from "axios";
 import type { CartItemType } from "@/types/cart.type";
 
@@ -72,6 +73,7 @@ export const getCart = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/cart/get");
+      console.log("getCart response:", response.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -165,6 +167,11 @@ export const cartSlice = createSlice({
       state.cartLoading = false;
       state.cartError = action.error.message as string;
       state.cartSuccess = false;
+    });
+
+    builder.addCase(createOrder.fulfilled, (state) => {
+      state.cartItems = [];
+      state.cartQty = 0;
     });
   },
 });

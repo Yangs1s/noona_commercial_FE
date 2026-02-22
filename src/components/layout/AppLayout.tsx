@@ -5,6 +5,7 @@ import AdminLayout from "./AdminLayout";
 import { useLocation } from "react-router-dom";
 import { Activity, useEffect } from "react";
 import { loginWithToken } from "@/features/user/userSlice";
+import { getCart } from "@/features/cart/cartSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/features/store";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const token = localStorage.getItem("accessToken");
     if (token) {
       dispatch(loginWithToken());
+      dispatch(getCart());
     }
   }, []);
   return (
