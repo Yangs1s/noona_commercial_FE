@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-
+import { Link } from "react-router-dom";
 interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
@@ -36,8 +35,7 @@ export const OrderSummary = ({
             </div>
             {!isFreeShipping && remainingForFreeShipping > 0 && (
               <p className="text-xs text-gray-500">
-                ₩{remainingForFreeShipping.toLocaleString()} 더 담으면 무료
-                배송
+                ₩{remainingForFreeShipping.toLocaleString()} 더 담으면 무료 배송
               </p>
             )}
           </div>
@@ -51,10 +49,12 @@ export const OrderSummary = ({
             </span>
           </div>
         </div>
-
-        <Button className="mt-8 w-full bg-black py-6 text-sm font-semibold uppercase tracking-widest text-white hover:bg-black/90">
-          결제하기
-        </Button>
+        <Link
+          to="/payment"
+          className="mt-8 block w-full bg-black py-6 text-center text-sm font-semibold uppercase tracking-widest text-white hover:bg-black/90"
+        >
+          결제페이지로 이동
+        </Link>
       </div>
     </div>
   );

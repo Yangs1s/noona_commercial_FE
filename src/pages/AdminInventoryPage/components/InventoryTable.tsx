@@ -41,6 +41,15 @@ const InventoryTable = ({
   const handleDeleteProduct = async (id: string) => {
     try {
       await dispatch(deleteProduct(id)).unwrap();
+      dispatch(
+        getProducts({
+          page: 1,
+          limit: 10,
+          sort: "createdAt",
+          order: "desc",
+          query: "",
+        }),
+      );
     } catch (error) {
       console.log(error);
     }

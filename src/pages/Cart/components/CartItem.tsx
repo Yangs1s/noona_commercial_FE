@@ -3,15 +3,21 @@ import { Button } from "@/components/ui/button";
 import { type ProductType } from "@/types/product.type";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/features/store";
-import { updateCart } from "@/features/cart/cartSlice";
+import { deleteCart, updateCart } from "@/features/cart/cartSlice";
 
 interface CartItemProps {
   item: ProductType;
   size: string;
   quantity: number;
+  cartItemId: string;
 }
 
-export const CartItem = ({ item, size, quantity }: CartItemProps) => {
+export const CartItem = ({
+  item,
+  size,
+  quantity,
+  cartItemId,
+}: CartItemProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleQuantityChange = (newQuantity: number) => {
@@ -25,9 +31,14 @@ export const CartItem = ({ item, size, quantity }: CartItemProps) => {
     );
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     // TODO: deleteCart action 추가 필요
-    console.log("Remove item:", item._id, size);
+    try {
+      console.log("cartItemId", cartItemId);
+      await dispatch(deleteCart(cartItemId)).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -2,34 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { showToastMessage } from "@/features/common/uiSlice";
 import { api } from "@/utils/api";
 import axios from "axios";
-interface User {
-  _id: string;
-  email: string;
-  name: string;
-  address: string;
-  phone: string;
-  level: "customer" | "admin";
-}
+import type { User, RegisterPayload, LoginPayload } from "@/types/user.type";
+
 interface UserState {
   user: User | null;
   loading: boolean;
   loginError: string | null;
   registrationError: string | null;
   success: boolean;
-}
-
-interface RegisterPayload {
-  email: string;
-  name: string;
-  password: string;
-  address: string;
-  phone: string;
-  navigate: (path: string) => void;
-}
-
-interface LoginPayload {
-  email: string;
-  password: string;
 }
 
 export const loginWithEmail = createAsyncThunk(

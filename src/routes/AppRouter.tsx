@@ -9,6 +9,9 @@ import ProductListPage from "@/pages/ProductList/ProductListpage";
 import AdminInventoryPage from "@/pages/AdminInventoryPage/AdminInventoryPage";
 import ProductPage from "@/pages/ProductDetail/ProductPage";
 import CartPage from "@/pages/Cart/CartPage";
+import AdminOrderPage from "@/pages/AdminOrder/AdminOrderPage";
+import PaymentPage from "@/pages/Payment/PaymentPage";
+import OrderCompletePage from "@/pages/OrderComplete/OrderCompletePage";
 
 export default function AppRouter() {
   return (
@@ -20,8 +23,8 @@ export default function AppRouter() {
       <Route path="/signup" element={<SignupPage />} />
       <Route element={<PrivateRoutes permissionLevel={"customer"} />}>
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/payment" element={<div>Payment</div>} />
-        <Route path="/payment/success" element={<div>OrderComplete</div>} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment/success" element={<OrderCompletePage />} />
         <Route path="/account/purchase" element={<div>MyPage</div>} />
       </Route>
 
@@ -31,7 +34,7 @@ export default function AppRouter() {
         element={<PrivateRoutes permissionLevel={"admin"} />}
       >
         <Route path="inventory" element={<AdminInventoryPage />} />
-        <Route path="orders" element={<div>Orders</div>} />
+        <Route path="orders" element={<AdminOrderPage />} />
         <Route path="analytics" element={<div>Analytics</div>} />
         <Route path="settings" element={<div>Settings</div>} />
       </Route>

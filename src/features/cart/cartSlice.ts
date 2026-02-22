@@ -2,13 +2,7 @@ import { api } from "@/utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
 import axios from "axios";
-import { type ProductType } from "@/types/product.type";
-
-interface CartItemType {
-  productId: ProductType;
-  size: string;
-  quantity: number;
-}
+import type { CartItemType } from "@/types/cart.type";
 
 interface CartState {
   cartItems: CartItemType[];
@@ -25,6 +19,23 @@ const initialState: CartState = {
   cartError: null,
   cartSuccess: false,
 };
+export const deleteCart = createAsyncThunk(
+  "cart/deleteCart",
+  async (cartItemId: string, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.delete(`/cart/delete/${cartItemId}`);
+      dispatch(
+        showToastMessage({
+          message: response.data.status,
+          status: "success",
+        }),
+      );
+      return { items: response.data.data, cartQty: response.data.cartQty };
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
@@ -58,20 +69,11 @@ export const addToCart = createAsyncThunk(
 
 export const getCart = createAsyncThunk(
   "cart/getCart",
-  async (_, { rejectWithValue, dispatch }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/cart/get");
-      console.log(response.data);
       return response.data.data;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        dispatch(
-          showToastMessage({
-            message: error.response?.data.error,
-            status: "error",
-          }),
-        );
-      }
       return rejectWithValue(error);
     }
   },
@@ -130,6 +132,7 @@ export const cartSlice = createSlice({
     builder.addCase(getCart.fulfilled, (state, action) => {
       state.cartLoading = false;
       state.cartItems = action.payload;
+      state.cartQty = action.payload.length;
       state.cartSuccess = true;
     });
     builder.addCase(getCart.rejected, (state, action) => {
@@ -143,9 +146,22 @@ export const cartSlice = createSlice({
     builder.addCase(updateCart.fulfilled, (state, action) => {
       state.cartLoading = false;
       state.cartItems = action.payload;
+      state.cartQty = action.payload.length;
       state.cartSuccess = true;
     });
     builder.addCase(updateCart.rejected, (state, action) => {
+      state.cartLoading = false;
+      state.cartError = action.error.message as string;
+      state.cartSuccess = false;
+    });
+
+    builder.addCase(deleteCart.fulfilled, (state, action) => {
+      state.cartLoading = false;
+      state.cartItems = action.payload.items;
+      state.cartQty = action.payload.cartQty;
+      state.cartSuccess = true;
+    });
+    builder.addCase(deleteCart.rejected, (state, action) => {
       state.cartLoading = false;
       state.cartError = action.error.message as string;
       state.cartSuccess = false;

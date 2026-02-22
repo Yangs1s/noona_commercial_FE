@@ -24,23 +24,25 @@ export default function Header() {
   const { cartQty } = useSelector<RootState, RootState["cart"]>(
     (state) => state.cart,
   );
-  console.log(cartQty);
+
   return (
     <header className="sticky top-0 bg-white/90 dark:bg-background/90 backdrop-blur-md z-50 border-b border-border">
       <div className="flex items-center justify-between px-4 sm:px-6 md:px-12 py-6 md:py-8">
         <div className="flex items-center gap-3 shrink-0">
           <div className="size-2 bg-primary dark:bg-white rounded-full" />
-          <h1 className="text-sm md:text-base font-bold tracking-[0.2em] uppercase">
-            ShopMinimal
-          </h1>
+          <Link to="/">
+            <h1 className="text-sm md:text-base font-bold tracking-[0.2em] uppercase">
+              ShopMinimal
+            </h1>
+          </Link>
         </div>
 
         <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
           <Link
             className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-            to="/new-arrivals"
+            to="/"
           >
-            New Arrivals
+            All Products
           </Link>
           <Link
             className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"

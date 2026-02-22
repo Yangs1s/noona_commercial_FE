@@ -7,6 +7,7 @@ import CartEmpty from "./components/CartEmpty";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "@/features/store";
 import { getCart } from "@/features/cart/cartSlice";
+import { calcOrderPricing, FREE_SHIPPING_THRESHOLD } from "@/utils/cartUtils";
 
 const CartPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,14 +19,7 @@ const CartPage = () => {
     dispatch(getCart());
   }, [dispatch]);
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.productId.price * item.quantity,
-    0,
-  );
-  const FREE_SHIPPING_THRESHOLD = 30000;
-  const SHIPPING_COST = 3000;
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-  const total = subtotal + shipping;
+  const { subtotal, shipping, total } = calcOrderPricing(cartItems);
 
   if (cartItems.length === 0) {
     return <CartEmpty />;
@@ -58,6 +52,7 @@ const CartPage = () => {
                   item={item.productId}
                   size={item.size}
                   quantity={item.quantity}
+                  cartItemId={item._id}
                 />
                 {index < cartItems.length - 1 && (
                   <hr className="mt-8 border-[#EEEEEE]" />

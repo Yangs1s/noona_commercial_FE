@@ -1,9 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-type ToastMessage = {
-  message: string;
-  status: "success" | "error" | "warning" | "";
-};
+import type { ToastMessage } from "@/types/ui.type";
 
 interface UiState {
 

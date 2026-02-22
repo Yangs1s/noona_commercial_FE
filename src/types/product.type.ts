@@ -9,3 +9,18 @@ export interface ProductType {
   status: string;
   sku: string;
 }
+
+export interface ProductResponse {
+  data: ProductType[];
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
+export interface ProductQueryParams {
+  page: number;
+  limit: number;
+  sort: "createdAt" | "updatedAt" | "name" | "price";
+  order: "asc" | "desc";
+  query: string;
+}

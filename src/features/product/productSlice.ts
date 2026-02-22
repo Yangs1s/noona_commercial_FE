@@ -1,14 +1,9 @@
 import { api } from "@/utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
-import type { ProductType } from "@/types/product.type";
+import type { ProductType, ProductResponse, ProductQueryParams } from "@/types/product.type";
 import axios from "axios";
-interface ProductResponse {
-  data: ProductType[];
-  totalPages: number;
-  currentPage: number;
-  itemsPerPage: number;
-}
+
 interface ProductState {
   products: ProductResponse | null;
   product: ProductType | null;
@@ -28,18 +23,10 @@ const initialState: ProductState = {
   productError: null,
   productSuccess: false,
 };
-
-interface QueryParams {
-  page: number;
-  limit: number;
-  sort: "createdAt" | "updatedAt" | "name" | "price";
-  order: "asc" | "desc";
-  query: string;
-}
 // 고객 혹은 비로그인 사용자가 상품을 조회할 때 사용하는 컨트롤러
 export const getProductsByCustomer = createAsyncThunk(
   "product/getProductsByCustomer",
-  async (queryParams: QueryParams, { rejectWithValue, dispatch }) => {
+  async (queryParams: ProductQueryParams, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.get("/product/customer", {
         params: { ...queryParams },
@@ -61,7 +48,7 @@ export const getProductsByCustomer = createAsyncThunk(
 );
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async (queryParams: QueryParams, { rejectWithValue, dispatch }) => {
+  async (queryParams: ProductQueryParams, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.get("/product", {
         params: { ...queryParams },
@@ -232,8 +219,9 @@ export const productSlice = createSlice({
       state.productError = action.error.message as string;
       state.productSuccess = false;
     });
-    builder.addCase(deleteProduct.fulfilled, (state) => {
+    builder.addCase(deleteProduct.fulfilled, (state, action) => {
       state.productLoading = false;
+      state.products = action.payload;
       state.productSuccess = true;
     });
     builder.addCase(deleteProduct.rejected, (state, action) => {
