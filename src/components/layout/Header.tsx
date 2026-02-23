@@ -6,6 +6,7 @@ import {
   LogOut,
   X,
   LayoutDashboard,
+  ClipboardList,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -73,6 +74,13 @@ export default function Header() {
           </div>
           {user ? (
             <div className="hidden sm:flex items-center gap-3">
+              {user.level !== "admin" && (
+                <Link to="/orders">
+                  <Button variant={"ghost"} size="icon">
+                    <ClipboardList className="size-5" />
+                  </Button>
+                </Link>
+              )}
               <Link
                 to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
               >
@@ -167,6 +175,18 @@ export default function Header() {
                     {user.level === "admin" ? "Admin" : "My Page"}
                   </Link>
                 </Button>
+                {user.level !== "admin" && (
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
+                  >
+                    <Link to="/orders" onClick={() => setMobileMenuOpen(false)}>
+                      <ClipboardList className="size-4" />
+                      주문 내역
+                    </Link>
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"

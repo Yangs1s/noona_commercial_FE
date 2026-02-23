@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatPhone } from "@/utils/paymentUtils";
 
 export interface ShippingAddress {
   address: string;
@@ -65,8 +66,9 @@ const ShippingForm = ({
             id="phone"
             type="tel"
             value={phone}
-            onChange={(e) => onPhoneChange(e.target.value)}
-            placeholder="010-0000-0000"
+            onChange={(e) => onPhoneChange(formatPhone(e.target.value))}
+            placeholder="01000000000"
+            maxLength={11}
             variant="ghost"
           />
         </div>

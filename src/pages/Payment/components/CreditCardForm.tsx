@@ -1,5 +1,6 @@
 import Cards, { type Focused } from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
+import { formatCardNumber, formatCardExpiry, formatCvc } from "@/utils/paymentUtils";
 
 const inputClass =
   "w-full border-b border-black/20 pb-2 text-sm text-black placeholder:text-black/30 outline-none focus:border-black bg-transparent transition-colors";
@@ -48,7 +49,7 @@ const CreditCardForm = ({
           <input
             type="text"
             value={cardNumber}
-            onChange={(e) => onNumberChange(e.target.value)}
+            onChange={(e) => onNumberChange(formatCardNumber(e.target.value))}
             onFocus={() => onFocusChange("number")}
             onBlur={() => onFocusChange("")}
             placeholder="0000 0000 0000 0000"
@@ -74,7 +75,7 @@ const CreditCardForm = ({
             <input
               type="text"
               value={cardExpiry}
-              onChange={(e) => onExpiryChange(e.target.value)}
+              onChange={(e) => onExpiryChange(formatCardExpiry(e.target.value))}
               onFocus={() => onFocusChange("expiry")}
               onBlur={() => onFocusChange("")}
               placeholder="MM/YY"
@@ -87,11 +88,11 @@ const CreditCardForm = ({
             <input
               type="text"
               value={cardCvc}
-              onChange={(e) => onCvcChange(e.target.value)}
+              onChange={(e) => onCvcChange(formatCvc(e.target.value))}
               onFocus={() => onFocusChange("cvc")}
               onBlur={() => onFocusChange("")}
               placeholder="000"
-              maxLength={4}
+              maxLength={3}
               className={inputClass}
             />
           </div>

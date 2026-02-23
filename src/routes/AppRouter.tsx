@@ -12,7 +12,7 @@ import CartPage from "@/pages/Cart/CartPage";
 import AdminOrderPage from "@/pages/AdminOrder/AdminOrderPage";
 import PaymentPage from "@/pages/Payment/PaymentPage";
 import OrderCompletePage from "@/pages/OrderComplete/OrderCompletePage";
-
+import MyOrderListPage from "@/pages/MyOrderList/MyOrderListPage";
 export default function AppRouter() {
   return (
     <Routes>
@@ -25,7 +25,7 @@ export default function AppRouter() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<OrderCompletePage />} />
-        <Route path="/account/purchase" element={<div>MyPage</div>} />
+        <Route path="/orders" element={<MyOrderListPage />} />
       </Route>
 
       {/* Admin */}

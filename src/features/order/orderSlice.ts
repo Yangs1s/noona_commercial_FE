@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "@/utils/api";
-import type { CreateOrderType, OrderResponseType } from "@/types/order.type";
+import type { CreateOrderType, OrderType } from "@/types/order.type";
 import { showToastMessage } from "../common/uiSlice";
 
 interface OrderState {
-  order: OrderResponseType | null;
+  orders: OrderType[];
   orderNumber: string | null;
   orderLoading: boolean;
   orderError: string | null;
@@ -12,7 +12,7 @@ interface OrderState {
 }
 
 const initialState: OrderState = {
-  order: null,
+  orders: [],
   orderNumber: null,
   orderLoading: false,
   orderError: null,
@@ -54,6 +54,18 @@ export const createOrder = createAsyncThunk(
   },
 );
 
+export const getOrders = createAsyncThunk(
+  "order/getOrders",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/order");
+      return response.data.data as OrderType[];
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const orderSlice = createSlice({
   name: "order",
   initialState: initialState,
@@ -77,6 +89,17 @@ export const orderSlice = createSlice({
       state.orderLoading = false;
       state.orderError = action.error.message as string;
       state.orderSuccess = false;
+    });
+    builder.addCase(getOrders.pending, (state) => {
+      state.orderLoading = true;
+    });
+    builder.addCase(getOrders.fulfilled, (state, action) => {
+      state.orderLoading = false;
+      state.orders = action.payload;
+    });
+    builder.addCase(getOrders.rejected, (state, action) => {
+      state.orderLoading = false;
+      state.orderError = action.error.message as string;
     });
   },
 });

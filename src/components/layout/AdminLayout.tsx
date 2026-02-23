@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   X,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { ToastMessage } from "@/components/common/ToastMessage";
@@ -126,6 +127,11 @@ export default function AdminLayout({
             <Button variant="ghost" size="icon">
               <Bell className="size-5" />
             </Button>
+            <Link to="/orders">
+              <Button variant="ghost" size="icon">
+                <ClipboardList className="size-5" />
+              </Button>
+            </Link>
             <div className="hidden sm:block h-4 w-1px bg-border" />
             <button className="hidden sm:flex items-center gap-3 group">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary dark:group-hover:text-white transition-colors">
