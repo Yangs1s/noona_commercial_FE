@@ -151,6 +151,7 @@ export const useProductForm = (mode: "new" | "edit", product?: ProductType) => {
     onSuccess?: () => void,
     product?: ProductType,
   ) => {
+    if (!validate()) return;
     try {
       await dispatch(
         updateProduct({ ...(product as ProductType), ...formData }),
