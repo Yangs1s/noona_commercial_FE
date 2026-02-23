@@ -19,9 +19,10 @@ export const CartItem = ({
   cartItemId,
 }: CartItemProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const maxQuantity = item.stock.find((s) => s.size === size)?.quantity ?? 0;
 
   const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity < 1) return;
+    if (newQuantity < 1 || newQuantity > maxQuantity) return;
     dispatch(
       updateCart({
         productId: item._id,
@@ -98,6 +99,7 @@ export const CartItem = ({
               variant="outline"
               size="icon"
               onClick={() => handleQuantityChange(quantity + 1)}
+              disabled={quantity >= maxQuantity}
               className="h-8 w-8"
             >
               <Plus className="h-3 w-3" />

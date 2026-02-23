@@ -53,6 +53,8 @@ export const useProductForm = (mode: "new" | "edit", product?: ProductType) => {
     if (!formData.image) newErrors.image = "이미지는 필수 입력 항목입니다.";
     if (!formData.stock.length)
       newErrors.stock = "재고는 필수 입력 항목입니다.";
+    else if (formData.stock.some((s) => s.quantity < 0))
+      newErrors.stock = "재고 수량은 0 이상이어야 합니다.";
     if (!formData.status) newErrors.status = "상태는 필수 입력 항목입니다.";
 
     setError(newErrors);

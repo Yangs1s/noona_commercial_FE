@@ -36,9 +36,10 @@ const StockManager = ({ stock, onChange, onAdd, onRemove }: StockManagerProps) =
             type="number"
             placeholder="수량"
             className="w-24"
+            min={0}
             value={item.quantity || ""}
             onChange={(e) =>
-              onChange(index, "quantity", Number(e.target.value))
+              onChange(index, "quantity", Math.max(0, Number(e.target.value)))
             }
           />
           <Button
