@@ -2,7 +2,6 @@ import {
   Search,
   ShoppingCart,
   Menu,
-  User,
   LogOut,
   X,
   LayoutDashboard,
@@ -14,11 +13,174 @@ import { useSelector, useDispatch } from "react-redux";
 import { type RootState, type AppDispatch } from "@/features/store";
 import { logout } from "@/features/user/userSlice";
 import { useState } from "react";
+import type { User as UserType } from "@/types/user.type";
+
+const NAV_LINKS = [
+  { label: "All Products", to: "/" },
+  { label: "Collections", to: "/collections" },
+  { label: "About", to: "/about" },
+];
+
+const navLinkClass =
+  "text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors";
+
+const mobileNavButtonClass =
+  "w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary";
+
+const mobileUserButtonClass =
+  "w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary";
+
+// ─── Sub Components ───────────────────────────────────────────────────────────
+
+function Logo() {
+  return (
+    <div className="flex items-center gap-3 shrink-0">
+      <div className="size-2 bg-primary dark:bg-white rounded-full" />
+      <Link to="/">
+        <h1 className="text-sm md:text-base font-bold tracking-[0.2em] uppercase">
+          ShopMinimal
+        </h1>
+      </Link>
+    </div>
+  );
+}
+
+function DesktopNav() {
+  return (
+    <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+      {NAV_LINKS.map(({ label, to }) => (
+        <Link key={to} className={navLinkClass} to={to}>
+          {label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function CartButton({ cartQty }: { cartQty: number }) {
+  return (
+    <div className="relative">
+      <Link to="/cart">
+        <ShoppingCart className="size-5" />
+      </Link>
+      <span className="absolute -top-1 -right-1 bg-primary dark:bg-white text-[8px] text-white dark:text-black size-3.5 flex items-center justify-center rounded-full font-bold">
+        {cartQty}
+      </span>
+    </div>
+  );
+}
+
+function DesktopUserActions({
+  user,
+  onLogout,
+}: {
+  user: UserType;
+  onLogout: () => void;
+}) {
+  const isAdmin = user.level === "admin";
+
+  return (
+    <div className="hidden sm:flex items-center gap-3">
+      {!isAdmin && (
+        <Link to="/orders">
+          <ClipboardList className="size-5" />
+        </Link>
+      )}
+      {isAdmin && (
+        <Link to="/admin/inventory">
+          <Button variant="ghost" size="icon" className="cursor-pointer">
+            <LayoutDashboard className="size-5" />
+          </Button>
+        </Link>
+      )}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="cursor-pointer"
+        onClick={onLogout}
+      >
+        <LogOut className="size-5" />
+      </Button>
+    </div>
+  );
+}
+
+function MobileMenu({
+  user,
+  onClose,
+  onLogout,
+}: {
+  user: UserType | null;
+  onClose: () => void;
+  onLogout: () => void;
+}) {
+  const isAdmin = user?.level === "admin";
+
+  return (
+    <nav className="md:hidden border-t border-border px-4 py-6 space-y-4 bg-white dark:bg-background">
+      {NAV_LINKS.map(({ label, to }) => (
+        <Button
+          key={to}
+          asChild
+          variant="ghost"
+          className={mobileNavButtonClass}
+        >
+          <Link to={to} onClick={onClose}>
+            {label}
+          </Link>
+        </Button>
+      ))}
+
+      <div className="border-t border-border pt-4">
+        {user ? (
+          <div className="space-y-1">
+            {isAdmin && (
+              <Button asChild variant="ghost" className={mobileUserButtonClass}>
+                <Link to="/admin/inventory" onClick={onClose}>
+                  <LayoutDashboard className="size-4" />
+                  Admin
+                </Link>
+              </Button>
+            )}
+            {!isAdmin && (
+              <Button asChild variant="ghost" className={mobileUserButtonClass}>
+                <Link to="/orders" onClick={onClose}>
+                  <ClipboardList className="size-4" />
+                  주문 내역
+                </Link>
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              className={mobileUserButtonClass}
+              onClick={() => {
+                onLogout();
+                onClose();
+              }}
+            >
+              <LogOut className="size-4" />
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <Button asChild variant="ghost" className={mobileNavButtonClass}>
+            <Link to="/login" onClick={onClose}>
+              Login
+            </Link>
+          </Button>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function Header() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const { user } = useSelector<RootState, RootState["user"]>(
     (state) => state.user,
   );
@@ -26,92 +188,37 @@ export default function Header() {
     (state) => state.cart,
   );
 
+  const handleLogout = () => dispatch(logout({ navigate }));
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
     <header className="sticky top-0 bg-white/90 dark:bg-background/90 backdrop-blur-md z-50 border-b border-border">
       <div className="flex items-center justify-between px-4 sm:px-6 md:px-12 py-6 md:py-8">
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="size-2 bg-primary dark:bg-white rounded-full" />
-          <Link to="/">
-            <h1 className="text-sm md:text-base font-bold tracking-[0.2em] uppercase">
-              ShopMinimal
-            </h1>
-          </Link>
-        </div>
+        <Logo />
+        <DesktopNav />
 
-        <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
-          <Link
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-            to="/"
-          >
-            All Products
-          </Link>
-          <Link
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-            to="/collections"
-          >
-            Collections
-          </Link>
-          <Link
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
-            to="/about"
-          >
-            About
-          </Link>
-        </nav>
-
+        {/* 아이콘 버튼들 */}
         <div className="flex items-center gap-3 sm:gap-6 shrink-0">
-          <Button variant={"ghost"} size="icon">
+          <Button variant="ghost" size="icon">
             <Search className="size-5" />
           </Button>
 
-          <div className="relative">
-            <Link to="/cart">
-              <ShoppingCart className="size-5" />
-            </Link>
-            <span className="absolute -top-1 -right-1 bg-primary dark:bg-white text-[8px] text-white dark:text-black size-3.5 flex items-center justify-center rounded-full font-bold">
-              {cartQty}
-            </span>
-          </div>
+          <CartButton cartQty={cartQty} />
+
           {user ? (
-            <div className="hidden sm:flex items-center gap-3">
-              {user.level !== "admin" && (
-                <Link to="/orders">
-                  <Button variant={"ghost"} size="icon">
-                    <ClipboardList className="size-5" />
-                  </Button>
-                </Link>
-              )}
-              <Link
-                to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
-              >
-                <Button variant={"ghost"} size="icon">
-                  {user.level === "admin" ? (
-                    <LayoutDashboard className="size-5" />
-                  ) : (
-                    <User className="size-5" />
-                  )}
-                </Button>
-              </Link>
-              <Button
-                variant={"ghost"}
-                size="icon"
-                className="cursor-pointer"
-                onClick={() => dispatch(logout({ navigate }))}
-              >
-                <LogOut className="size-5" />
-              </Button>
-            </div>
+            <DesktopUserActions user={user} onLogout={handleLogout} />
           ) : (
             <Button
               asChild
               variant="ghost"
-              className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-white transition-colors"
+              className={`hidden sm:inline-flex ${navLinkClass}`}
             >
               <Link to="/login">Login</Link>
             </Button>
           )}
+
           <Button
-            variant={"ghost"}
+            variant="ghost"
             size="icon"
             className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -125,93 +232,12 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 모바일 메뉴 */}
       {mobileMenuOpen && (
-        <nav className="md:hidden border-t border-border px-4 py-6 space-y-4 bg-white dark:bg-background">
-          <Button
-            asChild
-            variant="ghost"
-            className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-          >
-            <Link to="/new-arrivals" onClick={() => setMobileMenuOpen(false)}>
-              New Arrivals
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="ghost"
-            className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-          >
-            <Link to="/collections" onClick={() => setMobileMenuOpen(false)}>
-              Collections
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="ghost"
-            className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-          >
-            <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
-              About
-            </Link>
-          </Button>
-          <div className="border-t border-border pt-4">
-            {user ? (
-              <div className="space-y-1">
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-                >
-                  <Link
-                    to={`${user.level === "admin" ? "/admin/inventory" : "/mypage"}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {user.level === "admin" ? (
-                      <LayoutDashboard className="size-4" />
-                    ) : (
-                      <User className="size-4" />
-                    )}
-                    {user.level === "admin" ? "Admin" : "My Page"}
-                  </Link>
-                </Button>
-                {user.level !== "admin" && (
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-                  >
-                    <Link to="/orders" onClick={() => setMobileMenuOpen(false)}>
-                      <ClipboardList className="size-4" />
-                      주문 내역
-                    </Link>
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-                  onClick={() => {
-                    dispatch(logout({ navigate }));
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <LogOut className="size-4" />
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <Button
-                asChild
-                variant="ghost"
-                className="w-full justify-start text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
-              >
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  Login
-                </Link>
-              </Button>
-            )}
-          </div>
-        </nav>
+        <MobileMenu
+          user={user}
+          onClose={closeMobileMenu}
+          onLogout={handleLogout}
+        />
       )}
     </header>
   );

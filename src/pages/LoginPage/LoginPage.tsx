@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleIcon, ShopLogoIcon } from "@/components/icons";
+import { ShopLogoIcon } from "@/components/icons";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/features/store";
 import { showToastMessage } from "@/features/common/uiSlice";
-import { loginWithEmail } from "@/features/user/userSlice";
+import { loginWithEmail, loginWithGoogle } from "@/features/user/userSlice";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { Eye, EyeOff } from "lucide-react";
+// import GoogleLogin from "./components/GoogleLogin";
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -64,6 +66,11 @@ const LoginPage = () => {
         }),
       );
     }
+  };
+
+  const goggleLogin = (data: CredentialResponse) => {
+    console.log(data);
+    dispatch(loginWithGoogle({ token: data.credential as string }));
   };
   useEffect(() => {
     if (user || token) {
@@ -146,20 +153,13 @@ const LoginPage = () => {
             >
               SIGN IN
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              type="submit"
-              className="w-full py-6 md:py-8"
-            >
-              <GoogleIcon />
-              CONTINUE WITH GOOGLE
-            </Button>
+
             <OrSeparator>
               <span className="bg-white dark:bg-background-dark px-4 text-slate-400">
                 CONTINUE WITH
               </span>
             </OrSeparator>
+
             <Button
               asChild
               variant="outline"
@@ -168,6 +168,17 @@ const LoginPage = () => {
             >
               <Link to="/signup">CREATE ACCOUNT</Link>
             </Button>
+            <div className="mx-auto w-full flex justify-center">
+              <GoogleLogin
+                size="large"
+                width="400"
+                type="icon"
+                onSuccess={goggleLogin}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+            </div>
           </div>
         </form>
       </div>

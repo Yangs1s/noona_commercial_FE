@@ -2,6 +2,7 @@ import { api } from "@/utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { showToastMessage } from "../common/uiSlice";
 import { createOrder } from "../order/orderSlice";
+import { logout } from "../user/userSlice";
 import axios from "axios";
 import type { CartItemType } from "@/types/cart.type";
 
@@ -187,6 +188,13 @@ export const cartSlice = createSlice({
     builder.addCase(createOrder.fulfilled, (state) => {
       state.cartItems = [];
       state.cartQty = 0;
+    });
+
+    builder.addCase(logout.fulfilled, (state) => {
+      state.cartItems = [];
+      state.cartQty = 0;
+      state.cartError = null;
+      state.cartSuccess = false;
     });
   },
 });

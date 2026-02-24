@@ -15,18 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/features/store";
+import type { OrderType } from "@/types/order.type";
+export type { OrderStatus } from "@/types/order.type";
+import type { OrderStatus } from "@/types/order.type";
 
-export type OrderStatus = "preparing" | "shipping" | "delivered" | "cancelled";
-
-export interface AdminOrder {
-  orderId: string;
-  customerName: string;
-  email: string;
-  createdAt: Date;
-  totalAmount: number;
-  paymentMethod: string;
-  status: OrderStatus;
-}
+// 스키마 기반 타입 (order.type.ts의 OrderType과 동일)
+export type AdminOrder = OrderType;
 
 const STATUS_OPTIONS: { label: string; value: OrderStatus }[] = [
   { label: "결제 완료", value: "preparing" },
@@ -50,11 +46,12 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
 };
 
 interface OrderTableProps {
-  orders: AdminOrder[];
   onStatusChange: (orderId: string, status: OrderStatus) => void;
 }
 
-const OrderTable = ({ orders, onStatusChange }: OrderTableProps) => {
+const OrderTable = ({ onStatusChange }: OrderTableProps) => {
+  const { orders } = useSelector((state: RootState) => state.order);
+  console.log(orders);
   return (
     <Table className="table-fixed">
       <TableHeader>
@@ -63,7 +60,7 @@ const OrderTable = ({ orders, onStatusChange }: OrderTableProps) => {
           <TableHead className="w-[18%] text-gray-500">고객명</TableHead>
           <TableHead className="w-[14%] text-gray-500">주문 일시</TableHead>
           <TableHead className="w-[12%] text-gray-500">결제 금액</TableHead>
-          <TableHead className="w-[12%] text-gray-500">결제 수단</TableHead>
+          <TableHead className="w-[12%] text-gray-500">연락처</TableHead>
           <TableHead className="w-[20%] text-gray-500">배송 상태</TableHead>
           <TableHead className="w-[10%] text-gray-500">관리</TableHead>
         </TableRow>
@@ -80,35 +77,40 @@ const OrderTable = ({ orders, onStatusChange }: OrderTableProps) => {
           </TableRow>
         ) : (
           orders.map((order) => (
-            <TableRow className="h-16" key={order.orderId}>
+            <TableRow className="h-16" key={order._id}>
               <TableCell className="font-mono text-xs text-gray-600 truncate">
-                {order.orderId}
+                {order.orderNum}
               </TableCell>
               <TableCell>
                 <div>
-                  <p className="text-sm font-medium truncate">{order.customerName}</p>
-                  <p className="text-xs text-gray-400 truncate">{order.email}</p>
+                  <p className="text-sm font-medium truncate">
+                    {order.contact.lastName}
+                    {order.contact.firstName}
+                  </p>
+                  <p className="text-xs text-gray-400 truncate">
+                    {order.shipTo.address}
+                  </p>
                 </div>
               </TableCell>
               <TableCell className="text-xs text-gray-500">
-                {order.createdAt.toLocaleDateString("ko-KR", {
+                {new Date(order.createdAt).toLocaleDateString("ko-KR", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                 })}
                 <br />
                 <span className="text-gray-400">
-                  {order.createdAt.toLocaleTimeString("ko-KR", {
+                  {new Date(order.createdAt).toLocaleTimeString("ko-KR", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </span>
               </TableCell>
               <TableCell className="text-sm">
-                ₩{order.totalAmount.toLocaleString()}
+                ₩{order.totalPrice.toLocaleString()}
               </TableCell>
               <TableCell className="text-sm text-gray-500">
-                {order.paymentMethod}
+                {order.contact.phone}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
@@ -122,14 +124,20 @@ const OrderTable = ({ orders, onStatusChange }: OrderTableProps) => {
                   </span>
                   <Select
                     value={order.status}
-                    onValueChange={(v) => onStatusChange(order.orderId, v as OrderStatus)}
+                    onValueChange={(value) =>
+                      onStatusChange(order._id, value as OrderStatus)
+                    }
                   >
                     <SelectTrigger size="sm" className="w-28 text-xs h-7">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {STATUS_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                        <SelectItem
+                          key={opt.value}
+                          value={opt.value}
+                          className="text-xs"
+                        >
                           {opt.label}
                         </SelectItem>
                       ))}

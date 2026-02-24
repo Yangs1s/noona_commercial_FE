@@ -41,10 +41,31 @@ export const loginWithEmail = createAsyncThunk(
   },
 );
 
-// export const loginWithGoogle = createAsyncThunk(
-//   "user/loginWithGoogle",
-//   async (token, { rejectWithValue }) => {},
-// );
+export const loginWithGoogle = createAsyncThunk(
+  "user/loginWithGoogle",
+  async ({ token }: { token: string }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/google", { token });
+      if (response.status !== 200) {
+        throw new Error(response.data?.error);
+      }
+      dispatch(showToastMessage({ message: "로그인 성공", status: "success" }));
+      localStorage.setItem("accessToken", response.data.token);
+      console.log("response.data", response.data);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
+      rejectWithValue(error);
+    }
+  },
+);
 
 export const logout = createAsyncThunk(
   "user/logout",
@@ -169,6 +190,18 @@ const userSlice = createSlice({
         state.user = null;
         state.loginError = null;
         state.registrationError = null;
+      })
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.user = null;
+        state.loginError = action.error.message as string;
       });
   },
 });

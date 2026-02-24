@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "@/utils/api";
-import type { CreateOrderType, OrderType } from "@/types/order.type";
+import type { CreateOrderType, OrderType, OrderStatus } from "@/types/order.type";
 import { showToastMessage } from "../common/uiSlice";
 
 interface OrderState {
@@ -9,6 +9,9 @@ interface OrderState {
   orderLoading: boolean;
   orderError: string | null;
   orderSuccess: boolean;
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
 }
 
 const initialState: OrderState = {
@@ -17,6 +20,9 @@ const initialState: OrderState = {
   orderLoading: false,
   orderError: null,
   orderSuccess: false,
+  totalCount: 0,
+  totalPages: 1,
+  currentPage: 1,
 };
 
 export const createOrder = createAsyncThunk(
@@ -25,7 +31,10 @@ export const createOrder = createAsyncThunk(
     {
       payload,
       navigate,
-    }: { payload: CreateOrderType; navigate: (path: string, options?: { state?: unknown }) => void },
+    }: {
+      payload: CreateOrderType;
+      navigate: (path: string, options?: { state?: unknown }) => void;
+    },
     { rejectWithValue, dispatch },
   ) => {
     try {
@@ -66,6 +75,45 @@ export const getOrders = createAsyncThunk(
   },
 );
 
+export const getOrdersAdmin = createAsyncThunk(
+  "order/getOrdersAdmin",
+  async (
+    { query = "", page = 1 }: { query?: string; page?: number } = {},
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await api.get("/order/admin", {
+        params: { query, page },
+      });
+      return {
+        data: response.data.data as OrderType[],
+        totalCount: response.data.totalCount as number,
+        totalPages: response.data.totalPages as number,
+        currentPage: response.data.currentPage as number,
+      };
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const changeOrderStatus = createAsyncThunk(
+  "order/changeOrderStatus",
+  async (
+    { id, status }: { id: string; status: OrderStatus },
+    { rejectWithValue, dispatch },
+  ) => {
+    try {
+      await api.patch(`/order/status/${id}`, { status });
+      dispatch(showToastMessage({ message: "배송 상태가 변경되었습니다", status: "success" }));
+      return { id, status };
+    } catch (error) {
+      dispatch(showToastMessage({ message: "배송 상태 변경 실패", status: "error" }));
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const orderSlice = createSlice({
   name: "order",
   initialState: initialState,
@@ -100,6 +148,24 @@ export const orderSlice = createSlice({
     builder.addCase(getOrders.rejected, (state, action) => {
       state.orderLoading = false;
       state.orderError = action.error.message as string;
+    });
+    builder.addCase(getOrdersAdmin.pending, (state) => {
+      state.orderLoading = true;
+    });
+    builder.addCase(getOrdersAdmin.fulfilled, (state, action) => {
+      state.orderLoading = false;
+      state.orders = action.payload.data;
+      state.totalCount = action.payload.totalCount;
+      state.totalPages = action.payload.totalPages;
+      state.currentPage = action.payload.currentPage;
+    });
+    builder.addCase(getOrdersAdmin.rejected, (state, action) => {
+      state.orderLoading = false;
+      state.orderError = action.error.message as string;
+    });
+    builder.addCase(changeOrderStatus.fulfilled, (state, action) => {
+      const order = state.orders.find((o) => o._id === action.payload.id);
+      if (order) order.status = action.payload.status;
     });
   },
 });
