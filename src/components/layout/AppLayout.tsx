@@ -16,7 +16,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   //   (state) => state.user,
   // );
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token = sessionStorage.getItem("accessToken");
     if (token) {
       dispatch(loginWithToken());
       dispatch(getCartQty());

@@ -11,7 +11,7 @@ import { calcOrderPricing, FREE_SHIPPING_THRESHOLD } from "@/utils/cartUtils";
 
 const CartPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { cartItems } = useSelector<RootState, RootState["cart"]>(
+  const { cartItems, cartLoading } = useSelector<RootState, RootState["cart"]>(
     (state) => state.cart,
   );
 
@@ -20,6 +20,10 @@ const CartPage = () => {
   }, [dispatch]);
 
   const { subtotal, shipping, total } = calcOrderPricing(cartItems);
+
+  if (cartLoading) {
+    return null;
+  }
 
   if (cartItems.length === 0) {
     return <CartEmpty />;

@@ -24,7 +24,7 @@ export const loginWithEmail = createAsyncThunk(
         dispatch(
           showToastMessage({ message: "로그인 성공", status: "success" }),
         );
-        localStorage.setItem("accessToken", response.data.token);
+        sessionStorage.setItem("accessToken", response.data.accessToken);
         return response.data;
       }
     } catch (error) {
@@ -50,7 +50,7 @@ export const loginWithGoogle = createAsyncThunk(
         throw new Error(response.data?.error);
       }
       dispatch(showToastMessage({ message: "로그인 성공", status: "success" }));
-      localStorage.setItem("accessToken", response.data.token);
+      sessionStorage.setItem("accessToken", response.data.token);
       console.log("response.data", response.data);
       return response.data;
     } catch (error) {
@@ -74,7 +74,7 @@ export const logout = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     try {
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       dispatch(
         showToastMessage({ message: "로그아웃 성공", status: "success" }),
       );

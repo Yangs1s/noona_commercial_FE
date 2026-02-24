@@ -7,7 +7,7 @@ export default function GuestRoutes() {
     (state) => state.user,
   );
 
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
 
   if (loading || (token && !user)) {
     return <div>Loading...</div>;

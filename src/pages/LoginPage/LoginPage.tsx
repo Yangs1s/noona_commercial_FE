@@ -23,7 +23,7 @@ const LoginPage = () => {
   const { user } = useSelector<RootState, RootState["user"]>(
     (state) => state.user,
   );
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
