@@ -13,9 +13,10 @@ const OrderSummary = ({ onSubmit }: OrderSummaryProps) => {
   const { cartItems } = useSelector<RootState, RootState["cart"]>(
     (state) => state.cart,
   );
-  const { subtotal, shipping, total } = calcOrderPricing(cartItems);
+  const validCartItems = cartItems.filter((item) => item.productId != null);
+  const { subtotal, shipping, total } = calcOrderPricing(validCartItems);
 
-  if (cartItems.length === 0) {
+  if (validCartItems.length === 0) {
     return <PaymentCartEmpty />;
   }
 
@@ -25,7 +26,7 @@ const OrderSummary = ({ onSubmit }: OrderSummaryProps) => {
 
       {/* 아이템 리스트 */}
       <div className="mb-6 space-y-4">
-        {cartItems.map((item) => (
+        {validCartItems.map((item) => (
           <div
             key={item._id}
             className="flex items-baseline justify-between gap-4"
