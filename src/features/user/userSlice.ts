@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { showToastMessage } from "@/features/common/uiSlice";
+import { getCartQty } from "@/features/cart/cartSlice";
 import { api } from "@/utils/api";
 import axios from "axios";
 import type { User, RegisterPayload, LoginPayload } from "@/types/user.type";
@@ -25,6 +26,7 @@ export const loginWithEmail = createAsyncThunk(
           showToastMessage({ message: "로그인 성공", status: "success" }),
         );
         sessionStorage.setItem("accessToken", response.data.accessToken);
+        dispatch(getCartQty());
         return response.data;
       }
     } catch (error) {
@@ -51,6 +53,7 @@ export const loginWithGoogle = createAsyncThunk(
       }
       dispatch(showToastMessage({ message: "로그인 성공", status: "success" }));
       sessionStorage.setItem("accessToken", response.data.token);
+      dispatch(getCartQty());
       console.log("response.data", response.data);
       return response.data;
     } catch (error) {
