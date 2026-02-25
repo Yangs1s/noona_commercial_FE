@@ -19,13 +19,14 @@ const CartPage = () => {
     dispatch(getCart());
   }, [dispatch]);
 
-  const { subtotal, shipping, total } = calcOrderPricing(cartItems);
+  const validCartItems = cartItems.filter((item) => item.productId != null);
+  const { subtotal, shipping, total } = calcOrderPricing(validCartItems);
 
   if (cartLoading) {
     return null;
   }
 
-  if (cartItems.length === 0) {
+  if (validCartItems.length === 0) {
     return <CartEmpty />;
   }
 
@@ -50,7 +51,7 @@ const CartPage = () => {
         {/* 장바구니 목록 (70%) */}
         <div className="sm:col-span-2 lg:col-span-7">
           <div className="space-y-8">
-            {cartItems.map((item, index) => (
+            {validCartItems.map((item, index) => (
               <div key={item.productId._id}>
                 <CartItemComponent
                   item={item.productId}
@@ -58,7 +59,7 @@ const CartPage = () => {
                   quantity={item.quantity}
                   cartItemId={item._id}
                 />
-                {index < cartItems.length - 1 && (
+                {index < validCartItems.length - 1 && (
                   <hr className="mt-8 border-[#EEEEEE]" />
                 )}
               </div>

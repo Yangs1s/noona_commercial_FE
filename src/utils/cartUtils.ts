@@ -10,7 +10,7 @@ interface CartItem {
 
 export const calcOrderPricing = (cartItems: CartItem[]) => {
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.productId.price * item.quantity,
+    (sum, item) => sum + (item.productId?.price ?? 0) * item.quantity,
     0,
   );
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
