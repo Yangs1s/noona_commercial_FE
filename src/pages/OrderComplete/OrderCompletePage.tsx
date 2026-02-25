@@ -51,11 +51,6 @@ const OrderCompletePage = () => {
           </p>
         </div>
 
-        {/* 안내 문구 */}
-        <p className="text-sm text-black/60 leading-relaxed">
-          주문 상세 내역은 마이페이지에서 확인하실 수 있습니다.
-        </p>
-
         {/* 버튼 */}
         <div className="flex flex-col items-center gap-4 w-full mt-4">
           <button
@@ -65,10 +60,10 @@ const OrderCompletePage = () => {
             쇼핑 계속하기
           </button>
           <button
-            onClick={() => navigate("/account/purchase")}
+            onClick={() => navigate("/orders")}
             className="w-full max-w-xs border border-black text-black text-sm tracking-widest py-4 hover:bg-black/5 transition-colors"
           >
-            주문 상세 보기
+            주문 내역 보기
           </button>
         </div>
 

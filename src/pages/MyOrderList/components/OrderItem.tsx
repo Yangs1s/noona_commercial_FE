@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { OrderType } from "@/types/order.type";
 import OrderStatusBadge from "./OrderStatusBadge";
@@ -63,14 +62,6 @@ const OrderItem = ({ order }: OrderItemProps) => {
           </div>
         </div>
 
-        {/* 상세 보기 */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-xs tracking-widest uppercase border-black/20 text-black hover:bg-black hover:text-white transition-colors rounded-none"
-        >
-          상세 보기
-        </Button>
       </div>
 
       <Separator className="mt-10 bg-black/5" />
