@@ -45,11 +45,12 @@ const PaymentPage = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
 
-  const { total } = calcOrderPricing(cartItems);
+  const validCartItems = cartItems.filter((item) => item.productId != null);
+  const { total } = calcOrderPricing(validCartItems);
 
   const handleSubmit = () => {
     const payload = {
-      items: cartItems.map((item) => {
+      items: validCartItems.map((item) => {
         return {
           productId: item.productId._id,
           size: item.size,

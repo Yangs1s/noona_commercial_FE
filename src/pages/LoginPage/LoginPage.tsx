@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/features/store";
 import { showToastMessage } from "@/features/common/uiSlice";
 import { loginWithEmail, loginWithGoogle } from "@/features/user/userSlice";
+import { getCartQty } from "@/features/cart/cartSlice";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { Eye, EyeOff } from "lucide-react";
 // import GoogleLogin from "./components/GoogleLogin";
@@ -51,12 +52,13 @@ const LoginPage = () => {
     e.preventDefault();
     if (!validate()) return;
     try {
-      dispatch(
+      await dispatch(
         loginWithEmail({
           email: formData.email,
           password: formData.password,
         }),
-      );
+      ).unwrap();
+      dispatch(getCartQty());
     } catch (error) {
       console.log(error);
       dispatch(
@@ -68,9 +70,13 @@ const LoginPage = () => {
     }
   };
 
-  const goggleLogin = (data: CredentialResponse) => {
-    console.log(data);
-    dispatch(loginWithGoogle({ token: data.credential as string }));
+  const goggleLogin = async (data: CredentialResponse) => {
+    try {
+      await dispatch(loginWithGoogle({ token: data.credential as string })).unwrap();
+      dispatch(getCartQty());
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     if (user || token) {
