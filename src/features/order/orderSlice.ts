@@ -12,6 +12,8 @@ interface OrderState {
   totalCount: number;
   totalPages: number;
   currentPage: number;
+  nextCursor: string | null;
+  hasMore: boolean;
 }
 
 const initialState: OrderState = {
@@ -23,6 +25,8 @@ const initialState: OrderState = {
   totalCount: 0,
   totalPages: 1,
   currentPage: 1,
+  nextCursor: null,
+  hasMore: false,
 };
 
 export const createOrder = createAsyncThunk(
@@ -65,10 +69,15 @@ export const createOrder = createAsyncThunk(
 
 export const getOrders = createAsyncThunk(
   "order/getOrders",
-  async (_, { rejectWithValue }) => {
+  async ({ cursor }: { cursor?: string } = {}, { rejectWithValue }) => {
     try {
-      const response = await api.get("/order");
-      return response.data.data as OrderType[];
+      const response = await api.get("/order", {
+        params: cursor ? { cursor } : {},
+      });
+      return {
+        data: response.data.data as OrderType[],
+        nextCursor: response.data.nextCursor as string | null,
+      };
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -143,7 +152,11 @@ export const orderSlice = createSlice({
     });
     builder.addCase(getOrders.fulfilled, (state, action) => {
       state.orderLoading = false;
-      state.orders = action.payload;
+      const { data, nextCursor } = action.payload;
+      const isFirstPage = !action.meta.arg?.cursor;
+      state.orders = isFirstPage ? data : [...state.orders, ...data];
+      state.nextCursor = nextCursor;
+      state.hasMore = nextCursor !== null;
     });
     builder.addCase(getOrders.rejected, (state, action) => {
       state.orderLoading = false;

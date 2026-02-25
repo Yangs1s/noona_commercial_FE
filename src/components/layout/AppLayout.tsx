@@ -1,5 +1,6 @@
 import ShoppingLayout from "./ShoppingLayout";
 import AdminLayout from "./AdminLayout";
+import TopProgressBar from "@/components/common/TopProgressBar";
 // import { type RootState } from "@/features/store";
 // import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -24,6 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
   return (
     <>
+      <TopProgressBar />
       <Activity
         mode={location.pathname.includes("/admin") ? "visible" : "hidden"}
       >
