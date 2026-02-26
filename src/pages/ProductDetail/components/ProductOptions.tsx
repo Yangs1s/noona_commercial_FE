@@ -60,6 +60,8 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
     );
   };
 
+  const isOutOfStock = selectedSize ? getMaxQuantity() === 0 : false;
+
   return (
     <div className="flex flex-col px-8 py-16 lg:col-span-4 lg:px-12 lg:py-16">
       {/* SKU */}
@@ -143,9 +145,15 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
             >
               <Plus className="h-4 w-4" />
             </Button>
-            <span className="ml-2 text-xs text-gray-500">
-              (재고: {getMaxQuantity()}개)
-            </span>
+            {quantity >= getMaxQuantity() ? (
+              <span className="ml-2 text-xs text-red-400">
+                최대 수량입니다 (재고: {getMaxQuantity()}개)
+              </span>
+            ) : (
+              <span className="ml-2 text-xs text-gray-500">
+                (재고: {getMaxQuantity()}개)
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -154,15 +162,17 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
       <div className="mt-auto">
         <Button
           onClick={handleAddToCart}
-          disabled={!selectedSize}
+          disabled={!selectedSize || isOutOfStock}
           size="lg"
           className={`w-full py-8 text-sm font-semibold uppercase tracking-widest ${
-            selectedSize
-              ? "bg-black text-white hover:bg-black/90"
-              : "cursor-not-allowed bg-gray-300 text-gray-500"
+            isOutOfStock
+              ? "cursor-not-allowed bg-red-100 text-red-400"
+              : selectedSize
+                ? "bg-black text-white hover:bg-black/90"
+                : "cursor-not-allowed bg-gray-300 text-gray-500"
           }`}
         >
-          장바구니 담기
+          {isOutOfStock ? "재고 부족" : "장바구니 담기"}
         </Button>
       </div>
     </div>

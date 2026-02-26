@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/features/store";
 import { getOrders } from "@/features/order/orderSlice";
 import OrderItem from "./components/OrderItem";
+import OrderItemSkeleton from "./components/OrderItemSkeleton";
 
 const MyOrderListPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -41,8 +42,10 @@ const MyOrderListPage = () => {
         </h1>
 
         {orders.length === 0 && orderLoading ? (
-          <div className="py-32 flex justify-center">
-            <div className="w-6 h-6 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+          <div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <OrderItemSkeleton key={i} />
+            ))}
           </div>
         ) : orders.length === 0 ? (
           <div className="py-32 text-center">
