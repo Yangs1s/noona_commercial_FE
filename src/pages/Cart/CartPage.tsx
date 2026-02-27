@@ -22,7 +22,7 @@ const CartPage = () => {
   const validCartItems = cartItems.filter((item) => item.productId != null);
   const { subtotal, shipping, total } = calcOrderPricing(validCartItems);
 
-  if (cartLoading) {
+  if (cartLoading && cartItems.length === 0) {
     return null;
   }
 
