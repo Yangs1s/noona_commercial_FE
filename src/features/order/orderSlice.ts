@@ -61,7 +61,13 @@ export const createOrder = createAsyncThunk(
         }),
       );
       return rejectWithValue(response.data.error);
-    } catch (error) {
+    } catch (error: any) {
+      dispatch(
+        showToastMessage({
+          message: error?.response?.data?.error || "주문 처리 중 오류가 발생했습니다.",
+          status: "error",
+        }),
+      );
       return rejectWithValue(error);
     }
   },

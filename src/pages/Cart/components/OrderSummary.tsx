@@ -4,6 +4,7 @@ interface OrderSummaryProps {
   shipping: number;
   total: number;
   freeShippingThreshold: number;
+  hasStockIssue: boolean;
 }
 
 export const OrderSummary = ({
@@ -11,10 +12,12 @@ export const OrderSummary = ({
   shipping,
   total,
   freeShippingThreshold,
+  hasStockIssue,
 }: OrderSummaryProps) => {
   const remainingForFreeShipping = freeShippingThreshold - subtotal;
   const isFreeShipping = shipping === 0;
 
+  
   return (
     <div className="sticky top-8 w-[500px]">
       <div className="border border-[#EEEEEE] bg-white p-8">
@@ -49,12 +52,18 @@ export const OrderSummary = ({
             </span>
           </div>
         </div>
-        <Link
-          to="/payment"
-          className="mt-8 block w-full bg-black py-6 text-center text-sm font-semibold uppercase tracking-widest text-white hover:bg-black/90"
-        >
-          결제페이지로 이동
-        </Link>
+        {hasStockIssue ? (
+          <div className="mt-8 w-full cursor-not-allowed bg-gray-300 py-6 text-center text-sm font-semibold uppercase tracking-widest text-gray-500">
+            재고를 확인해주세요
+          </div>
+        ) : (
+          <Link
+            to="/payment"
+            className="mt-8 block w-full bg-black py-6 text-center text-sm font-semibold uppercase tracking-widest text-white hover:bg-black/90"
+          >
+            결제페이지로 이동
+          </Link>
+        )}
       </div>
     </div>
   );

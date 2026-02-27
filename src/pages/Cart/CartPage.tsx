@@ -74,6 +74,13 @@ const CartPage = () => {
             shipping={shipping}
             total={total}
             freeShippingThreshold={FREE_SHIPPING_THRESHOLD}
+            hasStockIssue={validCartItems.some((item) => {
+              const stockItem = item.productId.stock.find(
+                (s) => s.size === item.size,
+              );
+              const maxQty = stockItem?.quantity ?? 0;
+              return maxQty === 0 || item.quantity > maxQty;
+            })}
           />
         </div>
       </div>

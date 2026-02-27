@@ -22,7 +22,7 @@ export const CartItem = ({
   const maxQuantity = item.stock.find((s) => s.size === size)?.quantity ?? 0;
 
   const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity < 1 || newQuantity > maxQuantity) return;
+    if (newQuantity < 1) return;
     dispatch(
       updateCart({
         productId: item._id,
@@ -77,6 +77,14 @@ export const CartItem = ({
             <p className="text-black">
               사이즈: <span className="font-medium">{size}</span>
             </p>
+            {maxQuantity === 0 && (
+              <p className="text-xs text-red-400">품절 — 장바구니에서 제거해주세요</p>
+            )}
+            {maxQuantity > 0 && quantity > maxQuantity && (
+              <p className="text-xs text-red-400">
+                재고가 {maxQuantity}개 남았습니다. 수량을 조정해주세요
+              </p>
+            )}
           </div>
         </div>
 

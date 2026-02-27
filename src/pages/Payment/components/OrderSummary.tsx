@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { type RootState } from "@/features/store";
 import { calcOrderPricing } from "@/utils/cartUtils";
 import PaymentCartEmpty from "./PaymentCartEmpty";
+import { Loader2 } from "lucide-react";
 
 interface OrderSummaryProps {
   onSubmit: () => void;
@@ -13,6 +14,7 @@ const OrderSummary = ({ onSubmit }: OrderSummaryProps) => {
   const { cartItems } = useSelector<RootState, RootState["cart"]>(
     (state) => state.cart,
   );
+  const { orderLoading } = useSelector((state: RootState) => state.order);
   const validCartItems = cartItems.filter((item) => item.productId != null);
   const { subtotal, shipping, total } = calcOrderPricing(validCartItems);
 
@@ -74,9 +76,13 @@ const OrderSummary = ({ onSubmit }: OrderSummaryProps) => {
       <button
         type="button"
         onClick={onSubmit}
-        className="w-full bg-black py-4 text-sm tracking-widest text-white uppercase transition-opacity hover:opacity-80"
+        disabled={orderLoading}
+        className={`w-full bg-black py-4 text-sm tracking-widest text-white uppercase transition-opacity flex items-center justify-center gap-2 ${
+          orderLoading ? "opacity-50 cursor-not-allowed" : "hover:opacity-80"
+        }`}
       >
-        결제하기
+        {orderLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+        {orderLoading ? "처리 중..." : "결제하기"}
       </button>
     </div>
   );
