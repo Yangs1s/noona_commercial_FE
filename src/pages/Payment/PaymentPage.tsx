@@ -1,4 +1,19 @@
 import { Activity, useEffect, useState } from "react";
+
+interface FormErrors {
+  lastName?: string;
+  firstName?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  zipCode?: string;
+  cardNumber?: string;
+  cardName?: string;
+  cardExpiry?: string;
+  cardCvc?: string;
+  accountNumber?: string;
+  accountHolder?: string;
+}
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "@/features/store";
 import { getCart } from "@/features/cart/cartSlice";
@@ -45,10 +60,40 @@ const PaymentPage = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
 
+  const [errors, setErrors] = useState<FormErrors>({});
+
   const validCartItems = cartItems.filter((item) => item.productId != null);
   const { total } = calcOrderPricing(validCartItems);
 
+  const validate = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!lastName.trim()) newErrors.lastName = "성을 입력해주세요";
+    if (!firstName.trim()) newErrors.firstName = "이름을 입력해주세요";
+    if (phone.length < 11) newErrors.phone = "올바른 연락처를 입력해주세요 (11자리)";
+    if (!shippingAddress.address.trim()) newErrors.address = "주소를 입력해주세요";
+    if (!shippingAddress.city.trim()) newErrors.city = "도시를 입력해주세요";
+    if (shippingAddress.zipCode.length < 5) newErrors.zipCode = "우편번호 5자리를 입력해주세요";
+
+    if (paymentMethod === "card") {
+      if (cardNumber.replace(/\s/g, "").length < 16) newErrors.cardNumber = "카드 번호 16자리를 입력해주세요";
+      if (!cardName.trim()) newErrors.cardName = "카드 소유자 이름을 입력해주세요";
+      if (cardExpiry.length < 5) newErrors.cardExpiry = "유효기간을 입력해주세요 (MM/YY)";
+      if (cardCvc.length < 3) newErrors.cardCvc = "CVC 3자리를 입력해주세요";
+    }
+
+    if (paymentMethod === "transfer") {
+      if (!accountNumber.trim()) newErrors.accountNumber = "계좌번호를 입력해주세요";
+      if (!accountHolder.trim()) newErrors.accountHolder = "입금자명을 입력해주세요";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = () => {
+    if (!validate()) return;
+
     const payload = {
       items: validCartItems.map((item) => {
         return {
@@ -62,7 +107,6 @@ const PaymentPage = () => {
       shipTo: { ...shippingAddress },
       totalPrice: total,
     };
-    console.log("주문 데이터:", payload);
     dispatch(createOrder({ payload, navigate }));
   };
 
@@ -90,6 +134,7 @@ const PaymentPage = () => {
             onAddressChange={(field, value) =>
               setShippingAddress((prev) => ({ ...prev, [field]: value }))
             }
+            errors={errors}
           />
 
           {/* 결제 수단 */}
@@ -129,6 +174,7 @@ const PaymentPage = () => {
                 onExpiryChange={setCardExpiry}
                 onCvcChange={setCardCvc}
                 onFocusChange={setFocused}
+                errors={errors}
               />
             </Activity>
 
@@ -142,6 +188,7 @@ const PaymentPage = () => {
                 onBankChange={setSelectedBank}
                 onAccountNumberChange={setAccountNumber}
                 onAccountHolderChange={setAccountHolder}
+                errors={errors}
               />
             </Activity>
           </section>

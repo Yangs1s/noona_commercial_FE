@@ -18,6 +18,12 @@ interface CreditCardFormProps {
   onExpiryChange: (v: string) => void;
   onCvcChange: (v: string) => void;
   onFocusChange: (field: Focused) => void;
+  errors?: {
+    cardNumber?: string;
+    cardName?: string;
+    cardExpiry?: string;
+    cardCvc?: string;
+  };
 }
 
 const CreditCardForm = ({
@@ -31,6 +37,7 @@ const CreditCardForm = ({
   onExpiryChange,
   onCvcChange,
   onFocusChange,
+  errors = {},
 }: CreditCardFormProps) => {
   return (
     <div className="space-y-8">
@@ -56,6 +63,7 @@ const CreditCardForm = ({
             maxLength={19}
             className={inputClass}
           />
+          {errors.cardNumber && <p className="mt-1 text-xs text-red-500">{errors.cardNumber}</p>}
         </div>
         <div>
           <label className={labelClass}>카드 소유자</label>
@@ -68,6 +76,7 @@ const CreditCardForm = ({
             placeholder="HONG GIL DONG"
             className={inputClass}
           />
+          {errors.cardName && <p className="mt-1 text-xs text-red-500">{errors.cardName}</p>}
         </div>
         <div className="grid grid-cols-2 gap-6">
           <div>
@@ -82,6 +91,7 @@ const CreditCardForm = ({
               maxLength={5}
               className={inputClass}
             />
+            {errors.cardExpiry && <p className="mt-1 text-xs text-red-500">{errors.cardExpiry}</p>}
           </div>
           <div>
             <label className={labelClass}>CVC</label>
@@ -95,6 +105,7 @@ const CreditCardForm = ({
               maxLength={3}
               className={inputClass}
             />
+            {errors.cardCvc && <p className="mt-1 text-xs text-red-500">{errors.cardCvc}</p>}
           </div>
         </div>
       </div>

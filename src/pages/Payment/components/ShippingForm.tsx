@@ -8,6 +8,15 @@ export interface ShippingAddress {
   zipCode: string;
 }
 
+interface ShippingFormErrors {
+  lastName?: string;
+  firstName?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  zipCode?: string;
+}
+
 interface ShippingFormProps {
   lastName: string;
   firstName: string;
@@ -17,6 +26,7 @@ interface ShippingFormProps {
   onFirstNameChange: (v: string) => void;
   onPhoneChange: (v: string) => void;
   onAddressChange: (field: keyof ShippingAddress, value: string) => void;
+  errors?: ShippingFormErrors;
 }
 
 const ShippingForm = ({
@@ -28,6 +38,7 @@ const ShippingForm = ({
   onFirstNameChange,
   onPhoneChange,
   onAddressChange,
+  errors = {},
 }: ShippingFormProps) => {
   return (
     <section>
@@ -45,6 +56,7 @@ const ShippingForm = ({
               placeholder="홍"
               variant="ghost"
             />
+            {errors.lastName && <p className="text-xs text-red-500">{errors.lastName}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="firstName">이름</Label>
@@ -56,6 +68,7 @@ const ShippingForm = ({
               placeholder="길동"
               variant="ghost"
             />
+            {errors.firstName && <p className="text-xs text-red-500">{errors.firstName}</p>}
           </div>
         </div>
 
@@ -71,6 +84,7 @@ const ShippingForm = ({
             maxLength={11}
             variant="ghost"
           />
+          {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
         </div>
 
         {/* 주소 */}
@@ -84,6 +98,7 @@ const ShippingForm = ({
             placeholder="테헤란로 123"
             variant="ghost"
           />
+          {errors.address && <p className="text-xs text-red-500">{errors.address}</p>}
         </div>
 
         {/* 도시 / 우편번호 */}
@@ -98,6 +113,7 @@ const ShippingForm = ({
               placeholder="서울특별시"
               variant="ghost"
             />
+            {errors.city && <p className="text-xs text-red-500">{errors.city}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="zipCode">우편번호</Label>
@@ -110,6 +126,7 @@ const ShippingForm = ({
               maxLength={5}
               variant="ghost"
             />
+            {errors.zipCode && <p className="text-xs text-red-500">{errors.zipCode}</p>}
           </div>
         </div>
       </div>

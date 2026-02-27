@@ -13,6 +13,10 @@ interface BankTransferFormProps {
   onBankChange: (bank: Bank) => void;
   onAccountNumberChange: (v: string) => void;
   onAccountHolderChange: (v: string) => void;
+  errors?: {
+    accountNumber?: string;
+    accountHolder?: string;
+  };
 }
 
 const BankTransferForm = ({
@@ -22,6 +26,7 @@ const BankTransferForm = ({
   onBankChange,
   onAccountNumberChange,
   onAccountHolderChange,
+  errors = {},
 }: BankTransferFormProps) => {
   return (
     <div className="space-y-7">
@@ -53,6 +58,7 @@ const BankTransferForm = ({
           placeholder="계좌번호를 입력하세요"
           className={inputClass}
         />
+        {errors.accountNumber && <p className="mt-1 text-xs text-red-500">{errors.accountNumber}</p>}
       </div>
       <div>
         <label className={labelClass}>입금자명</label>
@@ -63,6 +69,7 @@ const BankTransferForm = ({
           placeholder="입금자명을 입력하세요"
           className={inputClass}
         />
+        {errors.accountHolder && <p className="mt-1 text-xs text-red-500">{errors.accountHolder}</p>}
       </div>
     </div>
   );
