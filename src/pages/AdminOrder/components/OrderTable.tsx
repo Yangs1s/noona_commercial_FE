@@ -50,7 +50,7 @@ interface OrderTableProps {
 
 const OrderTable = ({ onStatusChange, onDetailClick }: OrderTableProps) => {
   const { orders } = useSelector((state: RootState) => state.order);
-  console.log(orders);
+
   return (
     <Table className="table-fixed">
       <TableHeader>

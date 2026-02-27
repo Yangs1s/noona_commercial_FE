@@ -143,7 +143,7 @@ export const useProductForm = (mode: "new" | "edit", product?: ProductType) => {
       onSuccess?.();
     } catch (error) {
       // 에러 토스트는 썽크 내부에서 처리
-      console.log(error);
+      console.error(error);
     }
   };
 

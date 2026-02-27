@@ -53,7 +53,7 @@ export const addToCart = createAsyncThunk(
           status: "success",
         }),
       );
-      console.log(response.data.cartQty);
+    
       return response.data.cartQty;
     } catch (error) {
       if (axios.isAxiosError(error)) {

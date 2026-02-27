@@ -35,7 +35,6 @@ const CloudinaryUploadWidget = <T extends UwConfig>({
           (error, result) => {
             if (!error && result && result.event === "success") {
               if (typeof result.info !== "string") {
-                console.log("result.info", result.info);
                 setPublicId(result.info.url);
               }
             }

@@ -35,10 +35,9 @@ export const CartItem = ({
   const handleRemove = async () => {
     // TODO: deleteCart action 추가 필요
     try {
-      console.log("cartItemId", cartItemId);
       await dispatch(deleteCart(cartItemId)).unwrap();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -78,7 +77,9 @@ export const CartItem = ({
               사이즈: <span className="font-medium">{size}</span>
             </p>
             {maxQuantity === 0 && (
-              <p className="text-xs text-red-400">품절 — 장바구니에서 제거해주세요</p>
+              <p className="text-xs text-red-400">
+                품절 — 장바구니에서 제거해주세요
+              </p>
             )}
             {maxQuantity > 0 && quantity > maxQuantity && (
               <p className="text-xs text-red-400">

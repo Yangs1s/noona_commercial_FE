@@ -51,7 +51,6 @@ export const loginWithGoogle = createAsyncThunk(
       }
       dispatch(showToastMessage({ message: "로그인 성공", status: "success" }));
       sessionStorage.setItem("accessToken", response.data.token);
-      console.log("response.data", response.data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

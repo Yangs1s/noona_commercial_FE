@@ -34,7 +34,7 @@ export const getProductsByCustomer = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.error);
+
         dispatch(
           showToastMessage({
             message: error.response?.data.error,
@@ -56,7 +56,7 @@ export const getProducts = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.error);
+      
         dispatch(
           showToastMessage({
             message: error.response?.data.error,
@@ -84,7 +84,7 @@ export const createProduct = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.error);
+     
         dispatch(
           showToastMessage({
             message: error.response?.data.error,
@@ -110,7 +110,6 @@ export const deleteProduct = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.error);
         dispatch(
           showToastMessage({
             message: error.response?.data.error,
@@ -137,7 +136,6 @@ export const updateProduct = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.error);
         dispatch(
           showToastMessage({
             message: error.response?.data.error,
@@ -158,7 +156,7 @@ export const getProductById = createAsyncThunk(
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.error);
+
         dispatch(
           showToastMessage({
             message: error.response?.data.error,

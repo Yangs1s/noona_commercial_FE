@@ -11,6 +11,7 @@ import { loginWithEmail, loginWithGoogle } from "@/features/user/userSlice";
 import { getCartQty } from "@/features/cart/cartSlice";
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
 // import GoogleLogin from "./components/GoogleLogin";
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -60,22 +61,25 @@ const LoginPage = () => {
       ).unwrap();
       dispatch(getCartQty());
     } catch (error) {
-      console.log(error);
-      dispatch(
-        showToastMessage({
-          message: "아이디 혹은 비밀번호가 일치하지 않습니다.",
-          status: "error",
-        }),
-      );
+      if (axios.isAxiosError(error)) {
+        dispatch(
+          showToastMessage({
+            message: error.response?.data.error,
+            status: "error",
+          }),
+        );
+      }
     }
   };
 
   const goggleLogin = async (data: CredentialResponse) => {
     try {
-      await dispatch(loginWithGoogle({ token: data.credential as string })).unwrap();
+      await dispatch(
+        loginWithGoogle({ token: data.credential as string }),
+      ).unwrap();
       dispatch(getCartQty());
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   useEffect(() => {
@@ -181,7 +185,7 @@ const LoginPage = () => {
                 type="icon"
                 onSuccess={goggleLogin}
                 onError={() => {
-                  console.log("Login Failed");
+                  console.error("Login Failed");
                 }}
               />
             </div>
