@@ -71,6 +71,10 @@ const OrderDetailModal = ({ order, open, onClose }: OrderDetailModalProps) => {
               </span>
             </div>
             <div className="flex justify-between">
+              <span className="text-gray-400">이메일</span>
+              <span>{order.userId?.email ?? "-"}</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-gray-400">연락처</span>
               <span>{order.contact.phone}</span>
             </div>

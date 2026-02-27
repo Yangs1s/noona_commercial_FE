@@ -39,6 +39,7 @@ export interface OrderType {
   items: OrderItemType[];
   totalPrice: number;
   status: OrderStatus;
+  userId?: { email: string };
   contact: {
     lastName: string;
     firstName: string;
