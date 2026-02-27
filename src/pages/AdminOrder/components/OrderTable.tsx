@@ -1,4 +1,3 @@
-import { Eye } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -21,7 +20,6 @@ import type { OrderType } from "@/types/order.type";
 export type { OrderStatus } from "@/types/order.type";
 import type { OrderStatus } from "@/types/order.type";
 
-// 스키마 기반 타입 (order.type.ts의 OrderType과 동일)
 export type AdminOrder = OrderType;
 
 const STATUS_OPTIONS: { label: string; value: OrderStatus }[] = [
@@ -47,9 +45,10 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
 
 interface OrderTableProps {
   onStatusChange: (orderId: string, status: OrderStatus) => void;
+  onDetailClick: (order: OrderType) => void;
 }
 
-const OrderTable = ({ onStatusChange }: OrderTableProps) => {
+const OrderTable = ({ onStatusChange, onDetailClick }: OrderTableProps) => {
   const { orders } = useSelector((state: RootState) => state.order);
   console.log(orders);
   return (
@@ -62,7 +61,7 @@ const OrderTable = ({ onStatusChange }: OrderTableProps) => {
           <TableHead className="w-[12%] text-gray-500">결제 금액</TableHead>
           <TableHead className="w-[12%] text-gray-500">연락처</TableHead>
           <TableHead className="w-[20%] text-gray-500">배송 상태</TableHead>
-          <TableHead className="w-[10%] text-gray-500">관리</TableHead>
+          <TableHead className="w-[10%] text-gray-500">상세</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -146,8 +145,11 @@ const OrderTable = ({ onStatusChange }: OrderTableProps) => {
                 </div>
               </TableCell>
               <TableCell>
-                <button className="text-gray-400 hover:text-gray-800 transition-colors cursor-pointer">
-                  <Eye size={16} />
+                <button
+                  onClick={() => onDetailClick(order)}
+                  className="text-xs text-gray-400 hover:text-gray-800 underline underline-offset-2 transition-colors cursor-pointer"
+                >
+                  상세보기
                 </button>
               </TableCell>
             </TableRow>

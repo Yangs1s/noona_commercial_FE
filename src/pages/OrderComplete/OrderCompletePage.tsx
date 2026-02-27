@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const CheckIcon = () => (
@@ -21,8 +22,17 @@ const CheckIcon = () => (
 );
 
 const OrderCompletePage = () => {
-  const { orderNumber } = useLocation().state;
+  const location = useLocation();
   const navigate = useNavigate();
+  const orderNumber = location.state?.orderNumber;
+
+  useEffect(() => {
+    if (!orderNumber) {
+      navigate("/", { replace: true });
+    }
+  }, [orderNumber, navigate]);
+
+  if (!orderNumber) return null;
 
   return (
     <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-white">

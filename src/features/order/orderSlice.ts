@@ -102,12 +102,16 @@ export const getOrders = createAsyncThunk(
 export const getOrdersAdmin = createAsyncThunk(
   "order/getOrdersAdmin",
   async (
-    { query = "", page = 1 }: { query?: string; page?: number } = {},
+    {
+      query = "",
+      page = 1,
+      limit = 3,
+    }: { query?: string; page?: number; limit?: number } = {},
     { rejectWithValue },
   ) => {
     try {
       const response = await api.get("/order/admin", {
-        params: { query, page },
+        params: { query, page, limit },
       });
       return {
         data: response.data.data as OrderType[],
