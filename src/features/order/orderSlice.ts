@@ -58,21 +58,21 @@ export const createOrder = createAsyncThunk(
         const orderNumber = response.data.orderNumber;
         navigate("/payment/success", { state: { orderNumber } });
         return { orderNumber };
+      } else {
+        dispatch(
+          showToastMessage({
+            message: response.data.error,
+            status: "error",
+          }),
+        );
+        navigate("/cart");
       }
-      dispatch(
-        showToastMessage({
-          message: response.data.error,
-          status: "error",
-        }),
-      );
       return rejectWithValue(response.data.error);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         dispatch(
           showToastMessage({
-            message:
-              error.response?.data?.error ||
-              "주문 처리 중 오류가 발생했습니다.",
+            message: error.response?.data?.error,
             status: "error",
           }),
         );
