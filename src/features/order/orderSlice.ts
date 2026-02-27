@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "@/utils/api";
-import type { CreateOrderType, OrderType, OrderStatus } from "@/types/order.type";
+import type {
+  CreateOrderType,
+  OrderType,
+  OrderStatus,
+} from "@/types/order.type";
 import { showToastMessage } from "../common/uiSlice";
+import axios from "axios";
 
 interface OrderState {
   orders: OrderType[];
@@ -61,13 +66,17 @@ export const createOrder = createAsyncThunk(
         }),
       );
       return rejectWithValue(response.data.error);
-    } catch (error: any) {
-      dispatch(
-        showToastMessage({
-          message: error?.response?.data?.error || "주문 처리 중 오류가 발생했습니다.",
-          status: "error",
-        }),
-      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        dispatch(
+          showToastMessage({
+            message:
+              error.response?.data?.error ||
+              "주문 처리 중 오류가 발생했습니다.",
+            status: "error",
+          }),
+        );
+      }
       return rejectWithValue(error);
     }
   },
@@ -120,10 +129,17 @@ export const changeOrderStatus = createAsyncThunk(
   ) => {
     try {
       await api.patch(`/order/status/${id}`, { status });
-      dispatch(showToastMessage({ message: "배송 상태가 변경되었습니다", status: "success" }));
+      dispatch(
+        showToastMessage({
+          message: "배송 상태가 변경되었습니다",
+          status: "success",
+        }),
+      );
       return { id, status };
     } catch (error) {
-      dispatch(showToastMessage({ message: "배송 상태 변경 실패", status: "error" }));
+      dispatch(
+        showToastMessage({ message: "배송 상태 변경 실패", status: "error" }),
+      );
       return rejectWithValue(error);
     }
   },

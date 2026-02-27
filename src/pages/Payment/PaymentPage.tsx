@@ -91,7 +91,7 @@ const PaymentPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
 
     const payload = {
@@ -107,7 +107,12 @@ const PaymentPage = () => {
       shipTo: { ...shippingAddress },
       totalPrice: total,
     };
-    dispatch(createOrder({ payload, navigate }));
+
+    try {
+      await dispatch(createOrder({ payload, navigate })).unwrap();
+    } catch {
+      navigate("/cart");
+    }
   };
 
   useEffect(() => {
