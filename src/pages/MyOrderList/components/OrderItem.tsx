@@ -1,9 +1,64 @@
 import { Separator } from "@/components/ui/separator";
-import type { OrderType } from "@/types/order.type";
-import OrderStatusBadge from "./OrderStatusBadge";
+import type { OrderType, OrderStatus } from "@/types/order.type";
 
 interface OrderItemProps {
   order: OrderType;
+}
+
+const STEPS: { key: OrderStatus; label: string }[] = [
+  { key: "preparing", label: "결제 완료" },
+  { key: "shipping", label: "배송 중" },
+  { key: "delivered", label: "배송 완료" },
+];
+
+function OrderStatusSteps({ status }: { status: OrderStatus }) {
+  if (status === "cancelled") {
+    return (
+      <p className="text-xs tracking-widest uppercase text-red-400">
+        취소됨
+      </p>
+    );
+  }
+
+  const currentIndex = STEPS.findIndex((s) => s.key === status);
+
+  return (
+    <div className="flex items-center gap-0">
+      {STEPS.map((step, index) => {
+        const isDone = index <= currentIndex;
+        const isLast = index === STEPS.length - 1;
+
+        return (
+          <div key={step.key} className="flex items-center">
+            {/* 스텝 */}
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  isDone ? "bg-black" : "bg-black/15"
+                }`}
+              />
+              <span
+                className={`text-[10px] tracking-widest whitespace-nowrap ${
+                  isDone ? "text-black" : "text-black/30"
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+
+            {/* 연결선 */}
+            {!isLast && (
+              <div
+                className={`w-10 h-px mb-4 mx-1 ${
+                  index < currentIndex ? "bg-black" : "bg-black/15"
+                }`}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 const OrderItem = ({ order }: OrderItemProps) => {
@@ -28,11 +83,10 @@ const OrderItem = ({ order }: OrderItemProps) => {
             주문번호 {order.orderNum}
           </span>
         </div>
-        <OrderStatusBadge status={order.status} />
       </div>
 
-      {/* 상품 정보 */}
-      <div className="flex items-center justify-between">
+      {/* 상품 정보 + 상태 */}
+      <div className="flex items-center justify-between gap-8">
         <div className="flex items-center gap-6">
           {/* 썸네일 */}
           <div className="w-20 h-20 flex-shrink-0 bg-black/5 overflow-hidden">
@@ -62,6 +116,8 @@ const OrderItem = ({ order }: OrderItemProps) => {
           </div>
         </div>
 
+        {/* 배송 상태 스텝 */}
+        <OrderStatusSteps status={order.status} />
       </div>
 
       <Separator className="mt-10 bg-black/5" />

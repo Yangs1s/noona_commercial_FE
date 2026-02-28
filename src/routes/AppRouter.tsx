@@ -13,11 +13,13 @@ import AdminOrderPage from "@/pages/AdminOrder/AdminOrderPage";
 import PaymentPage from "@/pages/Payment/PaymentPage";
 import OrderCompletePage from "@/pages/OrderComplete/OrderCompletePage";
 import MyOrderListPage from "@/pages/MyOrderList/MyOrderListPage";
+import AboutPage from "@/pages/About/AboutPage";
 export default function AppRouter() {
   return (
     <Routes>
       {/* User */}
       <Route path="/" element={<ProductListPage />} />
+      <Route path="/about" element={<AboutPage />} />
       <Route path="/product/:id" element={<ProductPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />

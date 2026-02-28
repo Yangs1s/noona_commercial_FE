@@ -6,18 +6,18 @@ import {
   X,
   LayoutDashboard,
   ClipboardList,
+  CircleUser,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState, type AppDispatch } from "@/features/store";
 import { logout } from "@/features/user/userSlice";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { User as UserType } from "@/types/user.type";
 
 const NAV_LINKS = [
   { label: "All Products", to: "/" },
-  { label: "Collections", to: "/collections" },
   { label: "About", to: "/about" },
 ];
 
@@ -70,7 +70,7 @@ function CartButton({ cartQty }: { cartQty: number }) {
   );
 }
 
-function DesktopUserActions({
+function UserDropdown({
   user,
   onLogout,
 }: {
@@ -78,29 +78,66 @@ function DesktopUserActions({
   onLogout: () => void;
 }) {
   const isAdmin = user.level === "admin";
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const close = () => setOpen(false);
 
   return (
-    <div className="hidden sm:flex items-center gap-3">
-      {!isAdmin && (
-        <Link to="/orders">
-          <ClipboardList className="size-5" />
-        </Link>
-      )}
-      {isAdmin && (
-        <Link to="/admin/inventory">
-          <Button variant="ghost" size="icon" className="cursor-pointer">
-            <LayoutDashboard className="size-5" />
-          </Button>
-        </Link>
-      )}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="cursor-pointer"
-        onClick={onLogout}
+    <div className="relative hidden sm:block" ref={ref}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center text-muted-foreground hover:text-primary transition-colors cursor-pointer"
       >
-        <LogOut className="size-5" />
-      </Button>
+        <CircleUser className="size-5" />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-9 w-44 bg-white dark:bg-background border border-border shadow-lg py-1 z-50">
+          <Link
+            to="/orders"
+            onClick={close}
+            className="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors"
+          >
+            <ClipboardList className="size-4" />
+            내 주문
+          </Link>
+
+          {isAdmin && (
+            <Link
+              to="/admin/inventory"
+              onClick={close}
+              className="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors"
+            >
+              <LayoutDashboard className="size-4" />
+              Admin
+            </Link>
+          )}
+
+          <div className="border-t border-border mt-1 pt-1">
+            <button
+              onClick={() => {
+                onLogout();
+                close();
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors cursor-pointer"
+            >
+              <LogOut className="size-4" />
+              로그아웃
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -134,19 +171,17 @@ function MobileMenu({
       <div className="border-t border-border pt-4">
         {user ? (
           <div className="space-y-1">
+            <Button asChild variant="ghost" className={mobileUserButtonClass}>
+              <Link to="/orders" onClick={onClose}>
+                <ClipboardList className="size-4" />
+                내 주문
+              </Link>
+            </Button>
             {isAdmin && (
               <Button asChild variant="ghost" className={mobileUserButtonClass}>
                 <Link to="/admin/inventory" onClick={onClose}>
                   <LayoutDashboard className="size-4" />
                   Admin
-                </Link>
-              </Button>
-            )}
-            {!isAdmin && (
-              <Button asChild variant="ghost" className={mobileUserButtonClass}>
-                <Link to="/orders" onClick={onClose}>
-                  <ClipboardList className="size-4" />
-                  주문 내역
                 </Link>
               </Button>
             )}
@@ -159,7 +194,7 @@ function MobileMenu({
               }}
             >
               <LogOut className="size-4" />
-              Logout
+              로그아웃
             </Button>
           </div>
         ) : (
@@ -206,7 +241,7 @@ export default function Header() {
           <CartButton cartQty={cartQty} />
 
           {user ? (
-            <DesktopUserActions user={user} onLogout={handleLogout} />
+            <UserDropdown user={user} onLogout={handleLogout} />
           ) : (
             <Button
               asChild
